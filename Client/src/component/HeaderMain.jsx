@@ -10,7 +10,7 @@ export default function Header(){
                 <nav>
                     <ul className='flex'>                      
                         <li className='text-black text-xl hover:text-blue-700'>
-                            <Link to='/'>E</Link>
+                            <Link to='/'>Evènement</Link>
                         </li>
                         <li className='ml-8 text-black text-xl hover:text-blue-700'><a href="#">Point de vente</a></li>
                         <li className='ml-8 text-black text-xl hover:text-blue-700'><a href="#">Compte</a></li>

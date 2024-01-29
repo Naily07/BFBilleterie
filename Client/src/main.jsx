@@ -4,6 +4,8 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { extendTheme } from '@chakra-ui/react'
 import ReactDOM from 'react-dom/client'
 import { mode } from '@chakra-ui/theme-tools'
+import './index.css'
+
 const colors = {
   brand: {
     900: '#1a365d',
