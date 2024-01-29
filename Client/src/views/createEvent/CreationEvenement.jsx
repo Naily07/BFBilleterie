@@ -2,23 +2,14 @@
 import React from 'react';
 import './CreationEvenement.css'
 //import List_Event from '../component/List_Event';
-<<<<<<< HEAD
 import './CreationEvenement.css'
-=======
->>>>>>> 0d4e7cbfcbdb280ddd15fdccdfdb1d36081d90c1
 
 export default function CreationEvenement() {
   return (
     <>
         <div className='ctn_event'>
-<<<<<<< HEAD
             <div className='flex justify-between mt-4 mb-4 ml-40'>
                 <h1 className='text-xl text-white underlin'>Création d évènement</h1>
-=======
-            <div className='flex justify-between mt-4 mb-4'>
-                <h1 className='text-xl text-white underlin'>Création d évènement</h1>
-                <input type="text" placeholder='Recherche' className='ctn_input rounded pt-1 pb-1 border-solid border-1 border-blue-300 outline-none text-xl'/>
->>>>>>> 0d4e7cbfcbdb280ddd15fdccdfdb1d36081d90c1
             </div>
 
             <div className='ctn_element_evenement flex justify-center h-full'>
