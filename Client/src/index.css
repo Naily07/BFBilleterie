@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/*Navigation*/
+.ctn_nav {
+  padding: 0px 1.3rem;
+}
+
+/*Evenement*/
+.ctn_evenement {
+  padding: 0px 4.7rem;
+}
+
+/*Creation d'evenement*/
+.ctn_event {
+  padding: 0px 4.7rem;
+}
+
+.ctn_evenement_form {
+  width: 70%;
+  height: 550px;
+}
+
+.ctn_list_evenement {
+  width: 29%;
+  height: 550px;
+}
+
+.ctn_input {
+  width: 29%;   
+}
+
+.ctn_image {
+  width: 33%;
+  height: 550px;
+}
+
+/*STYLE SINGLEPAGE*/
+.ctn_presentation_evenement {
+  height: 375px;
+}
+
+.ctn_pict {
+  height: 35%;
+}
