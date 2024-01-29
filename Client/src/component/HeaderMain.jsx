@@ -12,8 +12,9 @@ export default function Header(){
                         <li className='text-white text-xl'>
                             <Link to='/'>Evènements</Link>
                         </li>
-                        <li className='ml-8 text-white text-xl'><a href="#">Point de vente</a></li>
+                        <li className='ml-8 text-white text-xl'><a href="#">Point de ventes</a></li>
                         <li className='ml-8 text-white text-xl'><a href="#">Compte</a></li>
+                        <li className='ml-8 text-white text-xl'><a href="#">Test</a></li>
                     </ul>
                 </nav>
             </div>
