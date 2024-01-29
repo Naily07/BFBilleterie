@@ -6,7 +6,11 @@ export default function Header(){
     return(
         <>
             <div className='ctn_nav h-12 bg-white flex justify-between items-center mb-1 shadow-lg'>
+<<<<<<< HEAD
                 <h1 className='c_logo text-green-600 text-2xl'>Logo</h1>
+=======
+                <h1 className='text-green-600 text-2xl'>Logo</h1>
+>>>>>>> 0d4e7cbfcbdb280ddd15fdccdfdb1d36081d90c1
                 <nav>
                     <ul className='flex'>                      
                         <li className='text-black text-xl hover:text-blue-700'>
@@ -20,4 +24,3 @@ export default function Header(){
         </> 
     )
 }
-
