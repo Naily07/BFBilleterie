@@ -9,12 +9,17 @@ export default function EvenementA() {
     <>
         <div className='ctn_evenemenets'>
 
-            <Link to='/'>
-                <div className='eventeA w-1/3 h-48 bg-red-300'>
-                    <h1 className='text-xl'>Test Evenement modification</h1>
-                </div>
-            </Link>
-
+          <Link to='/single-event'>
+              <div className='eventeA h-48 bg-white flex'>
+                  <div className='ctn_img_evenement bg-yellow-200'></div>
+                    <div className='ctn_list_information mt-2 ml-1'>
+                        <h1 className='mb-1'>Evènement : Sport6Nat</h1>
+                        <h1 className='mb-1'>Date : 06/08/2024</h1>
+                        <h1 className='mb-1'>Lieu : Itaosy</h1>
+                    <div className='separrateur'></div>
+                  </div>
+              </div>
+          </Link>
         </div>
     </>
   )
