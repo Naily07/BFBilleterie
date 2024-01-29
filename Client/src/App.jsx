@@ -11,7 +11,7 @@ function App() {
     <Header/>
     <Routes>     
       <Route path='/' element={ <PageNavigation/> }/>
-      <Route path='/create-event' element={ <CreationEvenement/> }/>
+      <Route path='/creation-event' element={ <CreationEvenement/> }/>
       <Route path='/single-event' element={ <SingleEvent/> }/>
       <Route path='/point-de-vente' element={ <PointDeVente/> }/>
     </Routes>

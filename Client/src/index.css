@@ -8,6 +8,14 @@
   box-sizing: border-box;
 }
 
+body {
+  background-color: #253337 !important;
+}
+
+.c_logo {
+  color: blue;
+}
+
 /*Navigation*/
 .ctn_nav {
   padding: 0px 1.3rem;
@@ -21,11 +29,6 @@
 /*Creation d'evenement*/
 .ctn_event {
   padding: 0px 4.7rem;
-}
-
-.ctn_evenement_form {
-  width: 70%;
-  height: 550px;
 }
 
 .ctn_list_evenement {

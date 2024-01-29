@@ -10,9 +10,9 @@ import { Link } from 'react-router-dom';
 function PageNavigation(){
     return(
         <>
-            <div className='ctn_evenement bg-yellow-300'>
+            <div className='ctn_evenement'>
                 <div className='flex'>
-                    <Link to='/' className='text-xl underline mb-3 mt-2'>Créer un Evènement</Link>
+                    <Link to='/creation-event' className='text-xl text-white mb-3 mt-2'>Créer un Evenement</Link>
                 </div>
                 <EvenementA />
             </div>
