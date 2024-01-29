@@ -12,7 +12,7 @@ function PageNavigation(){
         <>
             <div className='ctn_evenement bg-yellow-300'>
                 <div className='flex'>
-                    <Link to='/' className='text-xl underline mb-3 mt-2'>Créer un Evenement</Link>
+                    <Link to='/' className='text-xl underline mb-3 mt-2'>Créer un Evènement</Link>
                 </div>
                 <EvenementA />
             </div>
