@@ -1,9 +1,12 @@
-import PointDeVente from './views/PoinDeVente/PvPage'
+import PointDeVente from './pages/PoinDeVente/PvPage'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import PageNavigation from './views/accueil/PageEvenement'
-import CreationEvenement from './views/createEvent/CreationEvenement'
-import SingleEvent from './views/singleEvent/SingleEvent'
-import Header from "./component/HeaderMain"
+import PageNavigation from './pages/accueil/Accueil'
+import CreationEvenement from './pages/creationEvenement/CreationEvenement'
+import SingleEvent from './pages/singleEvent/SingleEvent'
+import Header from "./component/Header/HeaderMain"
+import Accueil from './pages/accueil/Accueil'
+import PageEvenement from './pages/pageEvenement/PageEvenement'
+import "./index.css"
 
 function App() {
   return(
@@ -11,9 +14,12 @@ function App() {
     <Header/>
     <Routes>     
       <Route path='/' element={ <PageNavigation/> }/>
+      <Route path='/accueil' element={<Accueil/>}/>
       <Route path='/creation-event' element={ <CreationEvenement/> }/>
       <Route path='/single-event' element={ <SingleEvent/> }/>
       <Route path='/point-de-vente' element={ <PointDeVente/> }/>
+      <Route path='/point-de-vente' element={ <PointDeVente/> }/>
+      <Route path='/page-evenement' element={ <PageEvenement/> }/>
     </Routes>
   </BrowserRouter>
   )
