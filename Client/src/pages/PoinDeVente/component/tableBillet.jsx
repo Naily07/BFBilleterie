@@ -30,7 +30,7 @@ import {
         color : theme.colors.teal[800],
         }
     return(
-        <Box p={"20px 20px 10px 20px"} >
+        <Box p={"20px 20px 10px 20px"} w={"100%"} >
             <Center >
                 <Text  as={"b"}  
                         mb={"20px"}     

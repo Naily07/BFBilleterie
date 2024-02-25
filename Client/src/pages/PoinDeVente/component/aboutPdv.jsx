@@ -32,8 +32,8 @@ export default function AboutPdv(){
     }
     return(
         // bg={"rgba(199,250,255,1)"}
-        <Flex   borderRadius={"0.5rem"} w={"100%"} bgColor={"white"} shadow={"rgba(149, 157, 165, 0.2) 0px 8px 24px;"} >
-            <Flex w={"70%"}  flexWrap={"wrap"} flexDir={"column"} p={"20px"} justifyContent={"center"} >
+        <Flex borderRadius={"0.5rem"} bgColor={"white"} shadow={"rgba(149, 157, 165, 0.2) 0px 8px 24px;"} >
+            <Flex w={"auto"} minW={"70%"} flexWrap={"wrap"} flexDir={"column"} p={"20px"} justifyContent={"center"} >
                 <Flex ml={"20px"}>
                     <Text as={"b"} _after={{content:"''", height:"2px", w:"100%", bgColor:theme.colors.gray[600], display:"block"}} >Identifiant : </Text>
                     <Text as={"i"} ml={"10px"}> Loriance</Text>
@@ -48,7 +48,9 @@ export default function AboutPdv(){
                 <TableBillet />
                 <TableEditBillet />
             </Flex>
-            <Flex flexDir={"column"} alignItems={"center"} w={"30%"} p={"20px 0px 20px 0px"} borderLeft={"5px solid"} justifyContent={"space-evenly"} borderColor={"gray.100"} >
+            <Flex flexDir={"column"} alignItems={"center"} w={"auto"} p={"20px 20px 20px 20px"}
+                 borderLeft={"3px solid"} justifyContent={"space-evenly"} borderColor={"gray.100"} 
+            >
                 <Box fontSize={"xl"} as={"b"} _after={{content:"''", height:"2px", w:"100%", bgColor:"black", display:"block"}}>
                     Vendus
                 </Box>
@@ -56,7 +58,7 @@ export default function AboutPdv(){
                     <Flex w={"100%"}   p={"10px"} flexDir={"column"} > 
                         {datas && datas.map((data)=>{
                             return(
-                                <Flex  w={"100%"}  justifyContent={"center"} m={"5px"}>
+                                <Flex  w={"100%"}  justifyContent={"center"} m={"5px"} key={data.name}>
                                     <Text color={theme.colors.teal[800]} fontSize={"lg"} fontWeight={"600"} as={"i"} >{data.name} :</Text>
                                     <Text fontSize={"lg"} color={theme.colors.yellow[500]} ml={"10px"}> {data.valeur} </Text>
                                 </Flex>
@@ -68,7 +70,7 @@ export default function AboutPdv(){
                             <Text fontSize={"lg"} color={theme.colors.yellow[500]} ml={"10px"}> {total()} </Text>
                     </Flex>
                 </Flex>
-                <Example />
+                {/* <Example  /> */}
             </Flex> 
         </Flex>
     )

@@ -27,7 +27,7 @@ export default class Example extends PureComponent {
 
   render() {
     return (
-        <Box   width={'100%'} height={"100%"}  >
+        <Box   width={'100%'} height={"100%"} p={"5px"}  >
             <ResponsiveContainer >
               <PieChart >
                 <Pie 

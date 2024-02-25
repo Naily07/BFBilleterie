@@ -25,7 +25,7 @@ export default function InputField() {
         })
     }
     return(
-    <NumberInput onClick={handlClick} defaultValue={0} min={"0"} >
+    <NumberInput onClick={handlClick} defaultValue={0} min={"0"} minWidth={"60px"}>
         <NumberInputField ref={ref} />
         <NumberInputStepper >
             <NumberIncrementStepper />

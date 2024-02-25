@@ -25,7 +25,7 @@ export default function SingleEvent() {
       <div className="ctn_single_evenement h-screen">
         <div className="ctn_presentation_evenement bg-white">
 
-          <motion.div className="ctn_pict bg-yellow-200 "
+          <motion.div className="ctn_pict bg-yellow-200 cursor-pointer "
             animate={{
               //x: isAnimating ? 600 : 0,
               opacity: isAnimation ? 1 : 0.8,

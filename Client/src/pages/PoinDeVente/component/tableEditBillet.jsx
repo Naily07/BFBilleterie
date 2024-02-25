@@ -29,8 +29,8 @@ import InputField from './NumberInput'
     }
    
     return(
-        <form  >
-            <Box p={"20px 20px 0px 20px"}>
+        <Box p={"20px 20px 0px 20px"} w={"100%"}>
+            <form  >
                 <Center>
                     <Text mb={"20px"} as={"b"}> Ajouter des nouveaux billets</Text>
                 </Center>
@@ -43,8 +43,8 @@ import InputField from './NumberInput'
                         </Thead>
                         <Tbody>
                             <Tr>
-                                <Td sx={sxTd}>
-                                    <InputField/>
+                                <Td sx={sxTd} >
+                                    <InputField />
                                 </Td>
                                 <Td sx={sxTd}>
                                     <InputField/>
@@ -59,8 +59,8 @@ import InputField from './NumberInput'
                 <Center mt={"40px"}>
                     <Button type='submit' variant={"solid"} colorScheme={"blue"} onClick={handleSubmit} >Valider</Button>
                 </Center>
-            </Box>
-        </form>
+            </form>
+        </Box>
         
     )
 }

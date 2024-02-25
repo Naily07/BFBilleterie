@@ -19,7 +19,7 @@ const styles = {
   global: (props) => ({
     body: {
       fontFamily: 'body',
-      bg: mode('gray.100', 'black')(props),
+      bg: mode('gray.50', 'black')(props),
     },
     '*::placeholder': {
       color: mode('gray.400', 'whiteAlpha.800')(props),
