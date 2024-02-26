@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
-import { Box, Text, Container } from "@chakra-ui/react"
+import { Box, Text, Container, Center } from "@chakra-ui/react"
 export default function Layout({children}){
     const location = useLocation()
     const [isconnecte, setConected] = useState(false)
@@ -47,9 +47,11 @@ export default function Layout({children}){
     }, [location])
     if (loadign) {
       return(
-        <Container>
-          .........Chargement
-        </Container>
+        <Center h={'100vh'}>
+          <Text>
+            .........Chargement
+          </Text>
+        </Center>
       )
     } 
     return(

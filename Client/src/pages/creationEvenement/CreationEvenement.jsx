@@ -49,7 +49,7 @@ export default function CreationEvenement() {
   return (
     <>
       <div className="ctn_creation_evenement bg-white mx-auto pt-5 pl-5 pr-5">
-        <h1 className="text-md font-medium uppercase mb-5">
+        <h1 className="text-md font-medium uppercase ">
           Créer votre évènement
         </h1>
         <div className="ctn_information mb-5">
