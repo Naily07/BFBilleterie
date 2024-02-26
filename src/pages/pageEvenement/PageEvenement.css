@@ -1,78 +1,84 @@
+/*.eventB {
+  width: 400px;
+  //height: 200px;
+  cursor: pointer;
+  margin-left: 5px;
+  transition: transform 0.3s ease 0s;
+  box-shadow: 1px 1px 1px rgba(107, 107, 107, 0.3);
+}*/
 
-.eventB {
-    width: 400px;
-    /*height: 200px;*/
-    cursor: pointer; 
-    margin-left: 5px;
-    transition: transform 0.3s ease 0s;
-    box-shadow: 1px 1px 1px rgba(107, 107, 107, 0.3);
+.a-eventeA {
+  display: inline-block;
+  width: 32%;
+  min-width: 32%;
+  height: 100%;
+}
+
+.eventeA {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.2s ease 0s;
+  box-shadow: 1px 1px 1px rgba(107, 107, 107, 0.3);
+  margin-left: 6px;
+}
+
+.eventeA:hover {
+  transform: translateY(-2px);
 }
 
 .eventB:hover {
-   transform: translateY(-2px);
+  transform: translateY(-2px);
 }
 
 .ctn_img_evenement {
-    width: 30%;
+  width: 30%;
 }
 
-
 .ctn_list_information {
-    width: 70%;
+  width: 70%;
 }
 
 .ctn_page_evenement {
-    width: 95%;
+  width: 95%;
 }
 
 .separrateur {
-    width: 100%;
-    height: 2px;
-    background-color: gray;
-    /*background-color: #fff;*/
-    margin-top: -3px;
+  width: 100%;
+  height: 2px;
+  background-color: gray;
+  /*background-color: #fff;*/
+  margin-top: -3px;
 }
 
 /*Test*/
 .ctn_img_evenement {
-    width: 30%;
-    background-image: url('../../assets/event/eventA.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
+  width: 30%;
+  background-image: url("../../assets/event/eventA.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .ctn_img_evenementA {
-    width: 30%;
-    background-image: url('../../assets/event/eventB.jpeg');
-    background-size: cover;
+  width: 30%;
+  background-image: url("../../assets/event/eventB.jpeg");
+  background-size: cover;
 }
 
 .ctn_img_evenementB {
-    width: 30%;
-    background-image: url('../../assets/event/eventeC.jpg');
-    background-size: cover;
+  width: 30%;
+  background-image: url("../../assets/event/eventeC.jpg");
+  background-size: cover;
 }
 
 .ctn_img_evenementC {
-    width: 30%;
-    background-image: url('../../assets/event/eventF.png');
-    background-size: cover;
+  width: 30%;
+  background-image: url("../../assets/event/eventF.png");
+  background-size: cover;
 }
 
-.ctn_img_evenementC:hover{
-   transform: translateZ(10px);
+.ctn_img_evenementC:hover {
+  transform: translateZ(10px);
 }
-
-.eventeA {
-    width: 400px;
-    transition: transform 0.2s ease 0s;
-    box-shadow: 1px 1px 1px rgba(107, 107, 107, 0.3);
-    margin-left: 6px;
-}
-
-.eventeA:hover {
-    transform: translateY(-2px);
- }
 
 /*Personnalisation des images
 .overlay::before {
@@ -87,21 +93,39 @@
 */
 
 .ctn_info_plus {
-    height: 52%;
-    /*background-color: yellow;*/
+  height: 52%;
+  /*background-color: yellow;*/
 }
 
 .sponse {
-    width: 16%;
-    height: 16%;
-    margin-left: .8rem;
-    margin-bottom: .2rem;
+  width: 16%;
+  height: 16%;
+  margin-left: 0.8rem;
+  margin-bottom: 0.2rem;
 }
 
 .btn_creation_event {
-    background-color: #2A4E62;
+  background-color: #2a4e62;
 }
 
 .btn_creation_event:hover {
+  background-color: #1a3a4a;
+}
+
+/*Les fonctions responsive*/
+
+/*Ambonin'io izy tsy valideny ny instruction anatin'ny @media*/
+@media screen and (max-width: 1100px) {
+  .btn_creation_event {
+    background-color: green;
+  }
+  .ctn_liste_all_event {
     background-color: #1a3a4a;
+  }
+
+  .a-eventeA {
+    display: inline-block;
+    width: 300px;
+    height: 100%;
+  }
 }
