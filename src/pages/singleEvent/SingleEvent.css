@@ -1,29 +1,27 @@
-
-
 .ctn_presentation_evenement {
-    height: 375px;
-    box-shadow: 2px 2px 2px rgba(167, 167, 167, 0.5);
-}
-  
-.ctn_pict {
-    height: 35%;
-}
-  
-.ctn_detail_singleEvente {
-    height: 15.3rem;
+  height: 375px;
+  box-shadow: 2px 2px 2px rgba(167, 167, 167, 0.5);
 }
 
 .ctn_pict {
-    background-image: url('../../assets/event/eventA.jpg');
-    background-repeat: no-repeat;
-    background-size: cover  ;
+  height: 35%;
+}
+
+.ctn_detail_singleEvente {
+  height: 15.3rem;
+}
+
+.ctn_pict {
+  background-image: url("../../assets/event/eventA.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .separateur {
-    background-color: blue;
-    width: 30%;
-    height: 2px;
-    margin-top: 2px;
+  background-color: blue;
+  width: 30%;
+  height: 2px;
+  margin-top: 2px;
 }
 
 /*
@@ -33,62 +31,62 @@
 */
 
 .bgz_type {
-    background-color: #2A4E62;
+  background-color: #2a4e62;
 }
 
 .bgz_s {
-    background-color: #2A4E62;
+  background-color: #2a4e62;
 }
 
 .bgz_si {
-    background-color: #2A4E62;
+  background-color: #2a4e62;
 }
 
 .bgz_g {
-    background-color: #2A4E62;
+  background-color: #2a4e62;
 }
 
 .sponse_single_event {
-    width: 10%;
-    height: 100%;
-    margin-left: .8rem;
-    margin-bottom: .2rem;
+  width: 10%;
+  height: 100%;
+  margin-left: 0.8rem;
+  margin-bottom: 0.2rem;
 }
 
 .icon_lieu {
-    width: 1.5rem;
-    height: 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .ctn_info_lieu {
-    margin-left: -5px;
+  margin-left: -5px;
 }
 
 .ctn_modifier_event {
-    width: 3%;
-    height: 15%;
-    /*background-color: red;*/
-    position: absolute;
-    /*margin-top: 13rem;
+  width: 3%;
+  height: 15%;
+  /*background-color: red;*/
+  position: absolute;
+  /*margin-top: 13rem;
     margin-left: 57rem;*/
-    bottom: .8rem;
-    right: 1.2rem;
-    z-index: 5;
-    cursor: pointer;
-    border-radius: 3px;
+  bottom: 0.8rem;
+  right: 1.2rem;
+  z-index: 5;
+  cursor: pointer;
+  border-radius: 3px;
 }
 
 .ctn_information_evenement {
-    position: relative;
+  position: relative;
 }
 
 .ctn_paf {
-    width: 140px;
+  width: 140px;
 }
 
-.iconSquar_info_single {
-    bottom: 0;
-    right: 0;
-    position: absolute;
-    cursor: pointer;
-}
+/*
+.modalplace {
+  position: absolute;
+  right: 0;
+  margin-top: 5px;
+}*/

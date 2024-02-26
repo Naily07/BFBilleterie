@@ -116,12 +116,13 @@
 
 /*Ambonin'io izy tsy valideny ny instruction anatin'ny @media*/
 @media screen and (max-width: 1100px) {
+  /*
   .btn_creation_event {
     background-color: green;
   }
   .ctn_liste_all_event {
     background-color: #1a3a4a;
-  }
+  }*/
 
   .a-eventeA {
     display: inline-block;

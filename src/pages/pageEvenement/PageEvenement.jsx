@@ -14,19 +14,19 @@ import "./PageEvenement.css";
 export default function PageEvenement() {
   return (
     <>
-      <div className="ctn_page_evenement mt-1 mx-auto pt-8 pl-5 pr-5">
+      <div className="ctn_page_evenement mt-0 mx-auto pt-8 pl-5 pr-5">
         <div className="ctn_title_creer_evenement flex w-full">
           <Link
             to="/create"
-            className="btn_creation_event font-medium border-2 w-1/4 py-2 px-12 cursor-pointer text-white font-mono rounded text-center"
+            className="btn_creation_event font-medium border-2 w-1/4 py-2 px-12 cursor-pointer text-white font-mono rounded text-center ml-5"
           >
             Créer votre évènement
           </Link>
         </div>
 
-        <div className="ctn_liste_all_event mt-8 flex flex-wrap pt-3 pb-3 pl-2 pr-2">
+        <div className="ctn_liste_all_event mt-1 flex flex-wrap pt-3 pb-3 pl-2 pr-2">
           <Link to="/single-event" className="a-eventeA ml-2">
-            <div className="eventeA h-48 bg-white flex">
+            <div className="eventeA h-48 bg-white flex mt-2">
               <div className="ctn_img_evenementA"></div>
               <div className="ctn_list_information bg-white">
                 <div className="pl-2 mt-1 flex w-full h-6 items-center">
@@ -74,7 +74,7 @@ export default function PageEvenement() {
           </Link>
 
           <Link to="/single-event" className="a-eventeA ml-2">
-            <div className="eventeA h-48 bg-white flex">
+            <div className="eventeA h-48 bg-white flex mt-2">
               <div className="ctn_img_evenementA"></div>
               <div className="ctn_list_information bg-white">
                 <div className="pl-2 mt-1 flex w-full h-6 items-center">
@@ -120,7 +120,7 @@ export default function PageEvenement() {
           </Link>
 
           <Link className="a-eventeA ml-2">
-            <div className="eventeA bg-white h-48 flex">
+            <div className="eventeA bg-white h-48 flex mt-2">
               <div className="ctn_img_evenementB "></div>
               <div className="ctn_list_information bg-white">
                 <div className="pl-2 mt-1 flex w-full h-6 items-center">
@@ -167,7 +167,7 @@ export default function PageEvenement() {
           </Link>
 
           <Link className="a-eventeA ml-2">
-            <div className="eventeA bg-white h-48 flex mt-3">
+            <div className="eventeA bg-white h-48 flex mt-2">
               <div className="ctn_img_evenementC  overlay"></div>
               <div className="ctn_list_information bg-white rounded-lg">
                 <div className="pl-2 mt-1 flex w-full h-6 items-center">

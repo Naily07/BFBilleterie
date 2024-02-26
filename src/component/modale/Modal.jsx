@@ -4,6 +4,7 @@ import { GoSponsorTiers } from "react-icons/go";
 import { IoLocationOutline } from "react-icons/io5";
 import { MdOutlineDateRange } from "react-icons/md";
 import "../modale/Modal.css";
+import ModalE from "../modalUpdateEvenent/ModaleEvent";
 
 import { useRef, useState } from "react";
 
@@ -190,9 +191,11 @@ export const Modal = ({ closeModal }) => {
           >
             Cancel
           </button>
-          <button className="btn_contunue text-white px-6 bg-arapawa-800 rounded hover:bg-arapawa-700">
+          <button className="btn_contunue text-white px-6 bg-blue-300">
             Continue
           </button>
+
+          <ModalE />
         </div>
       </div>
     </div>
