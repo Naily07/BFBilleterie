@@ -20,7 +20,7 @@ export default function PageEvenement() {
             to="/create"
             className="btn_creation_event font-medium border-2 w-1/4 py-2 px-12 cursor-pointer text-white font-mono rounded"
           >
-            Créer votre évènement
+            Créer un évènement
           </Link>
         </div>
 
