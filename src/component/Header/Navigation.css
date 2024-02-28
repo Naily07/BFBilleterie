@@ -1,39 +1,57 @@
 .ctn_menu {
-    /*background-color: #226D68;*/
-    background-color: #2A4E62;
-    position: fixed;
-    width: 100%;
-    margin-top: -4px;
-    z-index: 1;
+  /*background-color: #226D68;*/
+  background-color: #2a4e62;
+  position: fixed;
+  width: 100%;
+  margin-top: -4px;
+  z-index: 1;
 }
 
 .separation {
-    background-color: yellow;
-    width: 100%;
-    height: 60px;
+  background-color: yellow;
+  width: 100%;
+  height: 60px;
 }
 
 .ico_user {
-    width: 1.3rem;
-    height: 1.3rem;
-    margin-top: -6px;
+  width: 1.3rem;
+  height: 1.3rem;
+  margin-top: -6px;
 }
 
 .ico_sale {
-    width: 1.2rem;
-    height: 1.2rem;
-    margin-top: -6px;
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-top: -6px;
 }
 
 .ico_event {
-    width: 1.5rem;
-    height: 1.5rem;
-    margin-top: -6px;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: -6px;
 }
 
 .ico_home {
-    width: 1.4rem;
-    height: 1.4rem;
-    margin-top: -7px;
-    font-weight: 700;
+  width: 1.4rem;
+  height: 1.4rem;
+  margin-top: -7px;
+  font-weight: 700;
+}
+
+/*Style Responsive*/
+@media screen and (max-width: 790px) {
+  .test_responsive {
+    color: rgb(0, 255, 51);
+  }
+  .ctn_menu ul {
+    display: none;
+  }
+
+  .ctn_icone_menu {
+    display: block !important;
+  }
+}
+
+.ctn_icone_menu {
+  display: none;
 }

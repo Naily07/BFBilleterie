@@ -18,7 +18,7 @@ export default function PageEvenement() {
         <div className="ctn_title_creer_evenement flex w-full">
           <Link
             to="/creation-event"
-            className="btn_creation_event font-medium border-2 w-1/4 py-2 px-12 cursor-pointer text-white font-mono rounded text-center ml-5"
+            className="btn_creation_event font-medium border-2 w-64 py-2 px-4 cursor-pointer text-white font-mono rounded text-center ml-5"
           >
             Créer votre évènement
           </Link>
