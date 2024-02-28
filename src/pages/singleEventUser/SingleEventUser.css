@@ -1,0 +1,25 @@
+.ctn_achat_billet {
+  /*background-color: yellow;*/
+  width: 90%;
+  margin-top: 3px;
+}
+
+.ctn_radio_btn {
+  background-color: rgb(255, 255, 255);
+  width: 375px;
+  height: 200px;
+  margin-left: 3px;
+  box-shadow: 1px 1px 1px rgb(0, 0, 0, 0.35);
+}
+
+.ctn_mode_payment {
+  background-color: rgb(255, 255, 255);
+  width: 375px;
+  height: 200px;
+  margin-left: 3px;
+  box-shadow: 1px 1px 1px rgb(0, 0, 0, 0.35);
+}
+
+.ctn_type_mode_payment {
+  width: 790px;
+}
