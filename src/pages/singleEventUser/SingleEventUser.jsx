@@ -131,41 +131,41 @@ export default function SingleEventUser() {
         <section className="ctn_achat_billet mx-auto mt-5 mb-5">
           <div className="ctn_type_mode_payment flex px-2 flex-wrap items-center mx-auto justify-between border border-gray-300 pt-4 pb-3">
             <div className="ctn_radio_btn">
-              <h1 className="pl-2 mt-3 text-lg font-bold shadow-md pb-3 text-arapawa-800">
+              <h1 className="pl-6 mt-3 text-lg font-bold shadow-md pb-3 text-arapawa-800">
                 Type de billet
               </h1>
               <div className="ctn_radio px-2 mt-4">
                 <div className="ctn_simple mt-3 mb-2">
-                  <label htmlFor="" className="text-lg">
+                  <label htmlFor="" className="text-lg ml-3">
                     - Simple
                   </label>
-                  <input type="checkbox" className="ml-3" />
-                  <NumericInput className="w-20 ml-5 focus:outline-none focus:bg-white focus:border-gray-500" />
+                  <input type="checkbox" className="ml-7" />
+                  <NumericInput className="w-20 ml-9 focus:outline-none focus:bg-white focus:border-gray-500" />
                 </div>
                 <div className="ctn_silver mt-3">
-                  <label htmlFor="" className="text-lg">
+                  <label htmlFor="" className="text-lg ml-3">
                     - Silver
                   </label>
-                  <input type="checkbox" className="ml-6" />
-                  <NumericInput className="w-20 ml-5 focus:outline-none focus:bg-white focus:border-gray-500" />
+                  <input type="checkbox" className="ml-10" />
+                  <NumericInput className="w-20 ml-9 focus:outline-none focus:bg-white focus:border-gray-500" />
                 </div>
                 <div className="ctn_gold mt-3">
-                  <label htmlFor="" className="text-lg">
+                  <label htmlFor="" className="text-lg ml-3">
                     - Gold
                   </label>
-                  <input type="checkbox" className="ml-7" />
-                  <NumericInput className="w-20 ml-5 focus:outline-none focus:bg-white focus:border-gray-500" />
+                  <input type="checkbox" className="ml-11" />
+                  <NumericInput className="w-20 ml-9 focus:outline-none focus:bg-white focus:border-gray-500" />
                 </div>
               </div>
             </div>
             <div className="ctn_mode_payment">
-              <h1 className="pl-2 mt-3 text-lg font-bold shadow-md pb-3 text-arapawa-800">
+              <h1 className="pl-6 mt-3 text-lg font-bold shadow-md pb-3 text-arapawa-800">
                 Mode de payement
               </h1>
 
               <select
                 name=""
-                className="ml-2 font-bold mt-4 block appearance-none w-3/4 bg-white border border-gray-500 hover:border-gray-700 px-4 py-2 pr-4 rounded focus:outline-none focus:shadow-outline"
+                className="ml-6 font-bold mt-4 block appearance-none w-3/4 bg-white border border-gray-500 hover:border-gray-700 px-4 py-2 pr-4 rounded focus:outline-none focus:shadow-outline"
               >
                 <option value="" className="">
                   MVola
