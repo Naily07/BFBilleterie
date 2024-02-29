@@ -5,7 +5,7 @@ from io import BytesIO
 url = "http://127.0.0.1:8000/api/event/create-list-event/"
 
 # Paramètres de la requête
-nom = "Racing Bike"
+nom = "soiré"
 lieu = "Tamatave"
 
 # Fichier à envoyer
