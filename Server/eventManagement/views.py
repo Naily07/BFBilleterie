@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from requests import Response
 from rest_framework import generics
 from .models import *
 from rest_framework import serializers

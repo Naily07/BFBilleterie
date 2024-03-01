@@ -12,3 +12,6 @@ class PointDeVenteSerializer(serializers.Serializer):
     class Meta():
         models = PointDeVente
         fields = ["contact", "lieu"]
+
+class GoogleLoginSerializer(serializers.Serializer):
+    token = serializers.CharField()

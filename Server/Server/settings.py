@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'eventManagement',
     "account"
@@ -48,6 +49,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # "django.middleware.multipart.MultiPartMiddleware"
@@ -128,6 +130,18 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "302579460-rni4mhlau2fodrepb2s9gtsq9qeptup2.apps
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "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"
 BASE_FRONTEND_URL = os.environ.get('DJANGO_BASE_FRONTEND_URL', default='http://localhost:5173')
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173  ",  # Ajoutez l'origine de votre client React
+]
+CORS_ALLOW_ALL_ORIGINS = True  # Allow access from all origins (development only!)
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
 
 STATIC_URL = 'static/'
 MEDIA_URL = '/images/'
