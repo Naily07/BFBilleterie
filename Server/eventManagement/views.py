@@ -32,7 +32,9 @@ class ListCreateEvent(generics.ListCreateAPIView):
             
             self.perform_create(serializer)
             currentEvent = serializer.instance
-
+            #Creation direct de tickets
+            # ListTCreateickets().post(self, request=request)
+            
             for image in spons:
                 Sponsor.objects.create(
                     image = image,
@@ -68,7 +70,7 @@ class DetailEvent(generics.RetrieveAPIView):
     serializer_class = EventSerealiser
     lookup_field = "slug"
 
-class CreateListTickets(generics.ListCreateAPIView):
+class ListTCreateickets(generics.ListCreateAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerealiser
 
