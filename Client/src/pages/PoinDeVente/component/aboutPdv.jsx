@@ -4,7 +4,6 @@ import TableEditBillet from "./tableEditBillet"
 import { Select } from '@chakra-ui/react'
 import Example from "./Chart"
 import { useEffect, useState } from "react"
-import { useCallback } from "react"
 
 const donne = [
     {
@@ -51,11 +50,11 @@ export default function AboutPdv(){
             <Flex flexDir={"column"} alignItems={"center"} w={"auto"} p={"20px 20px 20px 20px"}
                  borderLeft={"3px solid"} justifyContent={"space-evenly"} borderColor={"gray.100"} 
             >
-                <Box fontSize={"xl"} as={"b"} _after={{content:"''", height:"2px", w:"100%", bgColor:"black", display:"block"}}>
+                <Box fontSize={"xl"} as={"b"} _after={{content:"''", height:"2px", w:"100%", bgColor:"black", display:"block"}} >
                     Vendus
                 </Box>
-                <Flex  h={"100%"} flexDir={"column"} alignItems={"center"} justifyContent={"space-around"} >
-                    <Flex w={"100%"}   p={"10px"} flexDir={"column"} > 
+                <Flex  h={"100%"} flexDir={"column"} alignItems={"center"} justifyContent={"space-around"}>
+                    <Flex w={"100%"}   p={"10px"} flexDir={"column"} alignItems={"center"} > 
                         {datas && datas.map((data)=>{
                             return(
                                 <Flex  w={"100%"}  justifyContent={"center"} m={"5px"} key={data.name}>

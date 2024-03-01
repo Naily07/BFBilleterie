@@ -13,13 +13,13 @@ export default function PointDeVente(){
 
 function Child(){
     return(
-        <Box m={"20px 80px 80px 80px"} borderRadius={"2.5 rem"} >
+        <Box m={"20px 80px 0px 80px"} borderRadius={"2.5 rem"} >
                 {/* <Text>Créer un point de vente</Text> */}
                 <ModalCreatePdv />
-            <Flex >
+            <Center >
                 <ListPdv />
                 <AboutPdv />
-            </Flex>
+            </Center>
         </Box>   
     )
 }

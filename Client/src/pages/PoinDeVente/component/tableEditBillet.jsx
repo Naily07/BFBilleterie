@@ -12,17 +12,13 @@ import {
     Box,
     Button,
     Center,
-    Text
+    Text,
+    theme
   } from '@chakra-ui/react'
 import InputField from './NumberInput'
+import { sxTableContainer, sxTd, sxTh } from '../sytle/tableau'
 
-  export default function TableEditBillet(){
-
-    const sxTd = {
-        textAlign : "center",
-        border :"1px solid",
-        borderColor : "gray.500"
-    }
+export default function TableEditBillet(){
     const handleSubmit = function(e){
         e.preventDefault()
         console.log("retour")
@@ -34,12 +30,12 @@ import InputField from './NumberInput'
                 <Center>
                     <Text mb={"20px"} as={"b"}> Ajouter des nouveaux billets</Text>
                 </Center>
-                <TableContainer >
+                <TableContainer sx={sxTableContainer} >
                     <Table >
-                        <Thead>
-                            <Th sx={sxTd}>Gold</Th>
-                            <Th sx={sxTd}>Silver</Th>
-                            <Th sx={sxTd}>Silver</Th>
+                        <Thead >
+                            <Th sx={sxTh}>Gold</Th>
+                            <Th sx={sxTh}>Silver</Th>
+                            <Th sx={sxTh}>Silver</Th>
                         </Thead>
                         <Tbody>
                             <Tr>

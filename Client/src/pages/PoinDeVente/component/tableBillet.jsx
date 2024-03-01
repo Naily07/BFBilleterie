@@ -13,22 +13,9 @@ import {
     Center,
     theme
   } from '@chakra-ui/react'
-  
+  import { sxTd, sxTh, sxTableContainer } from '../sytle/tableau'
   
   export default function TableBillet(){
-    const sxTh = {
-        textAlign : "center",
-        border :"1px solid",
-        borderColor : "gray.500",
-        color : theme.colors.teal[800],
-        fontWeight : "800"
-    }
-    const sxTd = {
-        textAlign : "center",
-        border :"1px solid",
-        borderColor : "gray.500",
-        color : theme.colors.teal[800],
-        }
     return(
         <Box p={"20px 20px 10px 20px"} w={"100%"} >
             <Center >
@@ -38,7 +25,7 @@ import {
                      Nombres des billets restants
                 </Text>
             </Center>
-            <TableContainer >
+            <TableContainer sx={sxTableContainer} >
                 <Table >
                     <Thead>
                         <Th sx={sxTh}>Gold</Th>

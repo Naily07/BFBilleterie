@@ -25,27 +25,27 @@ const data = [
         contact : "+261325899963",
     },
     {
-        identification : "Loriance",
+        identification : "Lorie",
         Lieu : "Ivandry",
         contact : "+261325899963",
     },
     {
-        identification : "Loriance",
+        identification : "Lorie",
         Lieu : "Ankorondrano",
         contact : "+261325899963",
     },
     {
-        identification : "Loriance",
+        identification : "Lorie",
         Lieu : "Ankorondrano",
         contact : "+261325899963",
     },
         {
-            identification : "Loriance",
+            identification : "Lorie",
             Lieu : "Analakely",
         contact : "+261325899963",
     },
     {
-        identification : "Loriance",
+        identification : "Lorie",
         Lieu : "Analakely",
         contact : "+261325899963",
     },
@@ -94,9 +94,8 @@ export default function ListPdv(){
     const [state, setState] = useState()
     const sxTd = {
         textAlign : "center",
-        border : "1px solid",
-        borderColor : "gray.400",
-             
+        // border : "1px solid",
+        // borderColor : "gray.400",      
     }
     const sxTh = {
         position : "relative",
@@ -104,7 +103,13 @@ export default function ListPdv(){
         color : "white",
         textAlign : "center",
         border : "1px solid white",
-        zIndex : 9,
+        zIndex : 9
+    }
+    const textTd = {
+        p : "0.5em 1em 0.5em 1em",
+        textAlign : "center",
+        borderRadius : "0.5em",
+        // border : "1px solid black"
     }
     const handleRemove = (lieu)=>{
         onOpen()
@@ -129,11 +134,28 @@ export default function ListPdv(){
                     <Tbody zIndex={1}>
                         {data && data.map((data, i)=>{
                         return (                            
-                            <Tr key={i} onClick={()=>handleClick} _hover={{bgColor : "gray.200", cursor:"pointer" }}>
-                                <Td  >{i + 1}</Td>
-                                <Td sx={sxTd}>{data.identification}</Td>
-                                <Td sx={sxTd} >{data.Lieu}</Td>
-                                <Td sx={sxTd}>{data.contact}</Td>
+                            <Tr key={i} onClick={()=>handleClick} 
+                            _hover={{bgColor : "gray.100", cursor:"pointer", borderLeft : "5px solid", borderColor:theme.colors.blackAlpha[900], boxSizing : "border-box"}}>
+                                <Td>
+                                    <Text sx={textTd} w={"50px"} color={"black"} >
+                                        {i + 1}
+                                    </Text>
+                                </Td>
+                                <Td sx={sxTd}>
+                                    <Text sx={textTd} bg={theme.colors.green[400]} color={"white"}>
+                                        {data.identification}
+                                    </Text>
+                                </Td>
+                                <Td sx={sxTd} >
+                                    <Text sx={textTd} bg={theme.colors.blue[400]} color={"white"}>
+                                        {data.Lieu}
+                                    </Text>
+                                </Td>
+                                <Td sx={sxTd}>
+                                    <Text sx={textTd} color={theme.colors.blue[800]} fontWeight={"600"}>
+                                        {data.contact}
+                                    </Text>
+                                </Td>
                                 <Td sx={sxTd}> 
                                 <Button onClick={()=>handleRemove(data.Lieu)} bgColor={"white"} 
                                     _hover={{bgColor : theme.colors.red[600], color: theme.colors.white}} p={0} m={0}

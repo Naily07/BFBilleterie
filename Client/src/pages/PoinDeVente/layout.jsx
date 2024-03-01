@@ -4,7 +4,7 @@ import { Box, Text, Container, Center } from "@chakra-ui/react"
 export default function Layout({children}){
     const location = useLocation()
     const [isconnecte, setConected] = useState(false)
-    const [loadign, setLoading] = useState(true)
+    const [loadign, setLoading] = useState(false)
     //Traitement Erreur
     useEffect(()=>{
         const fetchData = async () => {
@@ -16,7 +16,7 @@ export default function Layout({children}){
       
               try {
                 console.log("Appel");
-                const res = await fetch('http://127.0.0.1:8000/api/point-de-vente/login/google/', {
+                const res = await fetch('http://127.0.0.1:8000/api/account/login/google/', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
@@ -56,7 +56,8 @@ export default function Layout({children}){
     } 
     return(
         <>
-            {isconnecte == true ? children : ErrorLogin()}
+          {children}
+          {/* {isconnecte == false ? children : ErrorLogin()} */}
         </>
     )
 }
