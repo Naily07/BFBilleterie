@@ -6,7 +6,7 @@ import SingleEvent from './pages/singleEvent/SingleEvent'
 import Header from "./component/Header/HeaderMain"
 import Accueil from './pages/accueil/Accueil'
 import PageEvenement from './pages/pageEvenement/PageEvenement'
-import {Login} from './pages/loginpdv/login'
+import {Login} from './pages/login/login'
 import "./index.css"
 
 function App() {
@@ -19,7 +19,6 @@ function App() {
       <Route path='/accueil' element={<Accueil/>}/>
       <Route path='/creation-event' element={ <CreationEvenement/> }/>
       <Route path='/single-event' element={ <SingleEvent/> }/>
-      <Route path='/point-de-vente' element={ <PointDeVente/> }/>
       <Route path='/point-de-vente' element={ <PointDeVente/> }/>
       <Route path='/page-evenement' element={ <PageEvenement/> }/>
     </Routes>

@@ -118,10 +118,10 @@ export default function ListPdv(){
     return(
     <Box  borderRadius={"0.5rem"} shadow={"rgba(149, 157, 165, 0.2) 0px 8px 24px;"}>
         <RemovePdvModal isOpen = {isOpen}  onClose = {onClose} lieu = {state} />
-        <Box mr={2} bgColor={"white"} borderRadius={"0.5rem"} >
+        <Box bgColor={"white"} borderRadius={"0.5rem"} >
             {/* <Text p={theme.space[20]}>Liste de tous les points de vente</Text> */}
-            <TableContainer h={"xl"} overflowY={"scroll"} borderRadius={"0.5rem"} >
-                <Table variant={"simple"} > 
+            <TableContainer  h={"xl"} overflowY={"scroll"} borderRadius={"0.5rem"} >
+                <Table variant={"simple"} size={{md:"md", sm :"sm"}} > 
                     <Thead position={"sticky"}  top={"0"} zIndex={8}>
                         <Tr>
                             <Th  sx={sxTh} >id</Th>
@@ -142,7 +142,7 @@ export default function ListPdv(){
                                     </Text>
                                 </Td>
                                 <Td sx={sxTd}>
-                                    <Text sx={textTd} bg={theme.colors.green[400]} color={"white"}>
+                                    <Text sx={textTd} bg={theme.colors.green[100]} color={theme.colors.green[600]}>
                                         {data.identification}
                                     </Text>
                                 </Td>
@@ -157,7 +157,7 @@ export default function ListPdv(){
                                     </Text>
                                 </Td>
                                 <Td sx={sxTd}> 
-                                <Button onClick={()=>handleRemove(data.Lieu)} bgColor={"white"} 
+                                <Button onClick={()=>handleRemove(data.Lieu)} bgColor={theme.colors.pink[100]} 
                                     _hover={{bgColor : theme.colors.red[600], color: theme.colors.white}} p={0} m={0}
                                     color={theme.colors.red[600]}
                                 >

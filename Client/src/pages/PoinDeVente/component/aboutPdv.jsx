@@ -1,4 +1,4 @@
-import { Box, Text, Flex, Center, theme  } from "@chakra-ui/react"
+import { Box, Text, Flex, Center, theme, VStack  } from "@chakra-ui/react"
 import TableBillet from "./tableBillet"
 import TableEditBillet from "./tableEditBillet"
 import { Select } from '@chakra-ui/react'
@@ -7,30 +7,21 @@ import { useEffect, useState } from "react"
 
 const donne = [
     {
-        name : "gold",
-        valeur : 70
+        type_ticket : "gold",
+        nb_ticket : 70
     },
     {
-        name : "silver",
-        valeur : 5
+        type_ticket : "silver",
+        nb_ticket : 5
     },
     {
-        name : "cooper",
-        valeur : 2
+        type_ticket : "cooper",
+        nb_ticket : 2
     }
 ]
 
 export default function AboutPdv(){
-    const [datas, setData] = useState(donne)
-    const total = ()=>{
-        let t = 0
-        t = t + datas.map((data)=>{
-            return data.valeur
-        }).reduce((acc, curr) => acc + curr, 0);
-        return t
-    }
     return(
-        // bg={"rgba(199,250,255,1)"}
         <Flex borderRadius={"0.5rem"} bgColor={"white"} shadow={"rgba(149, 157, 165, 0.2) 0px 8px 24px;"} >
             <Flex w={"auto"} minW={"70%"} flexWrap={"wrap"} flexDir={"column"} p={"20px"} justifyContent={"center"} >
                 <Flex ml={"20px"}>
@@ -47,19 +38,38 @@ export default function AboutPdv(){
                 <TableBillet />
                 <TableEditBillet />
             </Flex>
-            <Flex flexDir={"column"} alignItems={"center"} w={"auto"} p={"20px 20px 20px 20px"}
-                 borderLeft={"3px solid"} justifyContent={"space-evenly"} borderColor={"gray.100"} 
+            <VStack 
+             borderLeft={"3px solid"} borderColor={"gray.100"}
+            >
+                {/* <Statistic title = {"Billets"} /> */}
+                <Statistic title = {"Vendus"}/>
+            </VStack>
+        </Flex>
+    )
+}
+
+function Statistic({title}){
+    const [datas, setData] = useState(donne)
+    const total = ()=>{
+        let t = 0
+        t = t + datas.map((data)=>{
+            return data.nb_ticket
+        }).reduce((acc, curr) => acc + curr, 0);
+        return t
+    }
+    return(
+        <VStack spacing={3} p={"20px 10px 10px 10px"} 
             >
                 <Box fontSize={"xl"} as={"b"} _after={{content:"''", height:"2px", w:"100%", bgColor:"black", display:"block"}} >
-                    Vendus
+                    {title}
                 </Box>
-                <Flex  h={"100%"} flexDir={"column"} alignItems={"center"} justifyContent={"space-around"}>
+                <Flex  flexDir={"column"} alignItems={"center"} justifyContent={"space-around"}>
                     <Flex w={"100%"}   p={"10px"} flexDir={"column"} alignItems={"center"} > 
                         {datas && datas.map((data)=>{
                             return(
-                                <Flex  w={"100%"}  justifyContent={"center"} m={"5px"} key={data.name}>
-                                    <Text color={theme.colors.teal[800]} fontSize={"lg"} fontWeight={"600"} as={"i"} >{data.name} :</Text>
-                                    <Text fontSize={"lg"} color={theme.colors.yellow[500]} ml={"10px"}> {data.valeur} </Text>
+                                <Flex  w={"100%"}  justifyContent={"center"} m={"5px"} key={data.type_ticket}>
+                                    <Text color={theme.colors.teal[800]} fontSize={"lg"} fontWeight={"600"} as={"i"} >{data.type_ticket} :</Text>
+                                    <Text fontSize={"lg"} color={theme.colors.yellow[500]} ml={"10px"}> {data.nb_ticket} </Text>
                                 </Flex>
                             )
                         })}
@@ -69,8 +79,6 @@ export default function AboutPdv(){
                             <Text fontSize={"lg"} color={theme.colors.yellow[500]} ml={"10px"}> {total()} </Text>
                     </Flex>
                 </Flex>
-                {/* <Example  /> */}
-            </Flex> 
-        </Flex>
+        </VStack> 
     )
 }

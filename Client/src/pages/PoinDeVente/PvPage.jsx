@@ -16,10 +16,15 @@ function Child(){
         <Box m={"20px 80px 0px 80px"} borderRadius={"2.5 rem"} >
                 {/* <Text>Créer un point de vente</Text> */}
                 <ModalCreatePdv />
-            <Center >
+            <Center 
+                flexWrap={{base:"wrap", sm: "wrap", md:'wrap', lg : "nowrap", xl :"nowrap", "2xl":"nowrap"}} 
+                flexDir={{base : 'row'}}
+                justifyContent={"center"}
+                gap={2}
+            >
                 <ListPdv />
                 <AboutPdv />
-            </Center>
+            </Center >
         </Box>   
     )
 }

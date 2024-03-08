@@ -37,7 +37,7 @@ export default function ModalCreatePdv(){
 
     return(
         < >
-            <HStack mb={"20px"}  w={"auto"} justifyContent={"right"}>
+            <HStack mb={"20px"}  w={"auto"} justifyContent={{lg:"right", sm : "center"}} >
                 <Button onClick={onOpen} colorScheme={"blue"} variant={"solid"} leftIcon={<IoCreateOutline/>}>Créer un point de vente</Button>
             </HStack>
             {/* <Input ml={4} ref={finalRef} /> */}
@@ -61,8 +61,8 @@ export default function ModalCreatePdv(){
                                 </FormControl>
 
                                 <FormControl mt={4}>
-                                    <FormLabel>Ajouter un compte</FormLabel>
-                                    <Input placeholder='Compte Befiana' />
+                                    <FormLabel>Adress email</FormLabel>
+                                    <Input placeholder='email' />
                                 </FormControl>
                             </Box>
                             {/* <Box ml={"20px"}> */}
@@ -94,7 +94,7 @@ export default function ModalCreatePdv(){
                     </ModalBody>
                     <ModalFooter>
                         <Button colorScheme='blue' mr={3}>
-                            Save
+                            Envoyer
                         </Button>
                         <Button onClick={onClose}>Cancel</Button>
                     </ModalFooter>

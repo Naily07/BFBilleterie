@@ -13,26 +13,25 @@ export default function Layout({children}){
             const code = value.get('code');
             if (code) {
               console.log("Code obtenu", code);
-      
               try {
-                console.log("Appel");
-                const res = await fetch('http://127.0.0.1:8000/api/account/login/google/', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({ code: code }),
-                })
+                  console.log("Appel");
+                  const res = await fetch('http://127.0.0.1:8000/api/account/login/', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ code: code}),
+                  })
 
-                if(res.status == 200 || res.status == 201)
-                  setConected((c)=> c = true)
-                console.log(res);
-                if (res.ok) {
-                  const result = await res.json();
-                  console.log("Résultat", result);
-                } else {
-                  console.error('Échec de la requête', res.status);
-                }
+                  if(res.status == 200 || res.status == 201)
+                    setConected((c)=> c = true)
+                  console.log(res);
+                  if (res.ok) {
+                    const result = await res.json();
+                    console.log("Résultat", result);
+                  } else {
+                    console.error('Échec de la requête', res.status);
+                } 
               } catch (error) {
                 console.error('Erreur lors de la requête', error);
               }
@@ -44,7 +43,8 @@ export default function Layout({children}){
             }
           }
       fetchData()
-    }, [location])
+    }, [location.search])
+    
     if (loadign) {
       return(
         <Center h={'100vh'}>
