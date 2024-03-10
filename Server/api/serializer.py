@@ -25,5 +25,5 @@ class MyTokenAuthentication(TokenObtainPairSerializer):
         token_data['username'] = user.username
         token_data['email'] = user.email
         access = token_data.access_token
-        refresh = token_data.refresh_token
+        refresh = token_data
         return access, refresh

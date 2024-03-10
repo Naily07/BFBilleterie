@@ -5,5 +5,5 @@ urlpatterns = [
     path('', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('activate/', TokenActivateView.as_view(), name='token_verify'),    #Verification du token
+    path('activate/', TokenActivateView.as_view(), name='token_activate'),    #Activation compte token
 ]

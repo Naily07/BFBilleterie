@@ -3,20 +3,23 @@ from django.contrib.auth.models import AbstractUser, User
 from django.contrib.auth.models import Group, Permission
 # Create your models here.
 
-class Organisateur(User):
-    tel = models.TextField()
+class MyUser(User):
+    tel = models.TextField(blank = True)
+    account_type = models.TextField(blank = True, null = True)
 
     def __str__(self):
         return self.username
     
     class Meta():
-        verbose_name = "Organisateur"
+        verbose_name = "GlobalUser"
+                
 
 class PointDeVente(AbstractUser):
-    groups = models.ManyToManyField(Group, related_name='pointdevente_groups')
+    groups = models.ManyToManyField(Group, related_name='pointdevente_groups', blank=True)
     user_permissions = models.ManyToManyField(
-        Permission, related_name='pointdevente_user_permissions'
+        Permission, related_name='pointdevente_user_permissions', blank=True
     )
+    
     username = models.TextField(default = "X")
     lieu = models.TextField()
     tel = models.TextField(blank = True, null = True, default = None)

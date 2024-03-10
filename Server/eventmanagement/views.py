@@ -9,13 +9,14 @@ from .serializer import *
 from django.http import Http404
 from rest_framework import status
 from django.db import IntegrityError
+from api.mixins import OgranisateursEditorMixin
 # Create your views here.
 
-class ListCreateSponsor(generics.ListCreateAPIView):
+class ListCreateSponsor(OgranisateursEditorMixin, generics.ListCreateAPIView):
     queryset = Sponsor.objects.all()
     serializer_class = SponsorSerializer
 
-class ListCreateEvent(generics.ListCreateAPIView):
+class ListCreateEvent(OgranisateursEditorMixin, generics.ListCreateAPIView):
     queryset = Evenement.objects.all()
     serializer_class = EventSerealiser
 
@@ -56,20 +57,20 @@ class ListCreateEvent(generics.ListCreateAPIView):
                 serializer.save(slug = slug)
 
         except IntegrityError as e:
-            return Response({"error": f" perform_create str(e)"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": f"perform_create {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
-class RemovEvent(generics.RetrieveDestroyAPIView, generics.ListAPIView):
+class RemovEvent(OgranisateursEditorMixin, generics.RetrieveDestroyAPIView, generics.ListAPIView):
     queryset = Evenement.objects.all()
     serializer_class = EventSerealiser
     lookup_field = "slug"
 
 
-class DetailEvent(generics.RetrieveAPIView):
+class DetailEvent(OgranisateursEditorMixin, generics.RetrieveAPIView):
     queryset = Evenement.objects.all()
     serializer_class = EventSerealiser
     lookup_field = "slug"
 
-class ListTCreateickets(generics.ListCreateAPIView):
+class ListTCreateickets(OgranisateursEditorMixin, generics.ListCreateAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerealiser
 
