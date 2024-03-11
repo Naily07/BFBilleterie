@@ -167,11 +167,12 @@ class RegisterPDV(generics.ListCreateAPIView):
                 request.data[key] = (value)
                 # print(value) 
             list_event =request.data.get('list_event')
-            request.data['username'] = "MyUsername"
             serializer.is_valid(raise_exception=True)
-            email = serializer.validated_data.get('email')
             owner_id = request.data.get('user_id')
+            email = serializer.validated_data.get('email')
+            username = email.split('@')[0] 
             owner = MyUser.objects.filter(id__iexact = owner_id).first()
+            serializer.validated_data['username'] = username
             print("OWN", owner, owner_id, email)
             listEventInstance = []
         except Exception as e :

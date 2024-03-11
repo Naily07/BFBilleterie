@@ -59,10 +59,13 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES" : [
-        # "rest_framework.authentication.SessionAuthentication",
+        # "rest_framework.authentication.SessionAuthentication",                        
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication',
     ],    
 }
+
+AUTHENTICATION_BACKENDS = ['account.authenticationBack.UserAuthenticationBack', 'account.authenticationBack.MyUserAuthenticationBack', 'account.authenticationBack.PointDeVenteBackend']
 
 ROOT_URLCONF = 'Server.urls'
 

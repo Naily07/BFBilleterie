@@ -19,8 +19,6 @@ class PointDeVente(AbstractUser):
     user_permissions = models.ManyToManyField(
         Permission, related_name='pointdevente_user_permissions', blank=True
     )
-    
-    username = models.TextField(default = "X")
     lieu = models.TextField()
     tel = models.TextField(blank = True, null = True, default = None)
     owner = models.ForeignKey(User, default = 1, on_delete = models.CASCADE, related_name = "pointdevente_related")
@@ -28,5 +26,6 @@ class PointDeVente(AbstractUser):
 
     def __str__(self):
         return self.username
+    
     class Meta():
         verbose_name = "Revendeur"

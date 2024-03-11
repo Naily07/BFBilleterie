@@ -20,13 +20,17 @@ class TokenActivateView(ListCreateAPIView):
     serializer_class = PointDeVenteSerializer
 
     def perform_create(self, serializer):
-        owner_id = self.request.data.get('user_id')
-        owner = MyUser.objects.filter(id__iexact = owner_id).first()
-        if owner :
-            print("IDD", owner)
-            serializer.save(owner = owner)
-        return Response({"Error" : "Not Save"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+        try :
+            owner_id = self.request.data.get('user_id')
+            owner = MyUser.objects.filter(id__iexact = owner_id).first()
+            username = serializer.validated_data.get('username')
+            print("NAME", username)
+            if owner and username :
+                print("IDD", owner)
+                serializer.save(owner = owner, username = username)
+            return Response({"Error" : "Not Save"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            raise BaseException(e)
 
     def get(self, request):
         token = (request.query_params.get('token'))
