@@ -70,7 +70,7 @@ class DetailEvent(OgranisateursEditorMixin, generics.RetrieveAPIView):
     serializer_class = EventSerealiser
     lookup_field = "slug"
 
-class ListTCreateickets(OgranisateursEditorMixin, generics.ListCreateAPIView):
+class ListCreateTickets(OgranisateursEditorMixin, generics.ListCreateAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerealiser
 
@@ -121,3 +121,38 @@ class ListTCreateickets(OgranisateursEditorMixin, generics.ListCreateAPIView):
             return get_event
         except Evenement.DoesNotExist:
             raise Http404("L'événement spécifié n'a pas été trouvé.")
+
+
+from rest_framework.permissions import IsAuthenticated
+class ListAddTickets(generics.ListAPIView):
+    queryset = AddTicket.objects.all()
+    serializer_class = AddTicketSerializer
+    # permission_classes = [IsAuthenticated, ]
+        
+    def get(self, request, *args, **kwargs):
+        get_event = self.get_Oneevent(request)
+        print(get_event)
+        if get_event:
+            tickets = AddTicket.objects.filter(event = get_event)
+            serealiser = AddTicketSerializer(tickets, many = True)
+            return Response(serealiser.data)
+        else:
+            return Response({"detail": "L'événement spécifié n'a pas été trouvé."}, status=404)
+    
+    def get_Oneevent(self, request):
+        slug = self.kwargs.get('slug')
+        print(slug)
+        try:
+            pdv = request.user
+            print(pdv)
+            curentPDV = PointDeVente.objects.filter(username__iexact = pdv).first()
+            print("CurrentPDV", curentPDV)
+            ownerPdv = curentPDV.owner
+            get_event = Evenement.objects.filter(slug__iexact=slug, owner__exact = ownerPdv).first()
+            relation = PointDeVenteToEvenement.objects.filter(pdv__exact = pdv, event__exact = get_event)
+            print(relation.pdv)        
+            return get_event
+        except Evenement.DoesNotExist:
+            raise Http404("L'événement spécifié n'a pas été trouvé.")
+        except Exception as e:
+            raise BaseException(e)

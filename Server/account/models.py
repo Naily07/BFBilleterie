@@ -20,7 +20,7 @@ class PointDeVente(AbstractUser):
         Permission, related_name='pointdevente_user_permissions', blank=True
     )
     
-    username = models.TextField(default = "X")
+    username = models.TextField(unique = True)
     lieu = models.TextField()
     tel = models.TextField(blank = True, null = True, default = None)
     owner = models.ForeignKey(User, default = 1, on_delete = models.CASCADE, related_name = "pointdevente_related")

@@ -34,7 +34,7 @@ class Login(APIView):
         
         username = request.data.get('username')#Login Google
         email = request.data.get('email')#Login Google
-        user =  User.objects.filter(email__iexact = email).first() 
+        user =  User.objects.filter(email__iexact = email, username__iexact = username).first() 
         pdv = PointDeVente.objects.filter(email__iexact = email).first()
         # print("GRR : ", group)
         getUser = object()
@@ -42,6 +42,8 @@ class Login(APIView):
             if user is None  and pdv is None:
                 raise AuthenticationFailed("le compte n'existe pas")
             if pdv:
+                # if pdv.username != "X":
+                #     pdv = PointDeVente.objects.filter(email__iexact = email, username__iexact = username).first()
                 #POINT DE VENTE
                 print("GERRR  : ", pdv.groups.all())
                 if pdv.is_active == False:
@@ -64,13 +66,7 @@ class Login(APIView):
             return response  
         except Exception as e:
             raise AuthenticationFailed(f"Login error {e}")
-        
-        #Get information user
-        # pdv = PointDeVente.objects.get_or_create()
-        # if access:
-        #     return Response({"access_token": access,"refresh_token":refresh }, status=status.HTTP_200_OK)    
-        # elif error :
-        #     return Response({"Error" : error})
+ 
 
 from eventManagement.models import Evenement, PointDeVenteToEvenement, Ticket, AddTicket
 from api.serializer import MyTokenActivation
@@ -97,66 +93,6 @@ class RegisterPDV(generics.ListCreateAPIView):
             # plain_message = (message)
             # send_mail(subject = subject, message = message, from_email = from_email, recipient_list = [email])
             return Response({"message": "Un e-mail d'activation a été envoyé avec succès."}, status=status.HTTP_201_CREATED)
-    
-    #Mbola ts nokitihana
-    def put(self, request, *args, **kwargs):
-        print("DATAS", *args)
-        datas = args[0]
-        for key, value in datas.items():
-            request.data[key] = str(value)
-            print(key) 
-        list_event = request.data.get('list_event')
-        print("request", request.data.get('lieu'))
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        listEventInstance = []
-        for event in list_event:
-            eventinst = Evenement.objects.filter(nom__iexact = event).first()
-            listEventInstance.append(eventinst)
-            if not eventinst:
-                return Response({f"L'evenement {event} n'existe pas"})
-        try :
-            if PointDeVente.objects.filter(username__iexact = nom_pdv, owner__exact = request.user):
-                #cas de même organisateur sur même pdv
-                return Response({"le point de vente est invalide ou existe deja"})
-            elif not PointDeVente.objects.filter(username__iexact = nom_pdv):
-                #username field existe dans la base => NOT
-                #cas d'un autre organisateur et pdv n'est pas encore dans la base
-                print("Passage a la creation")
-                self.perform_create(serializer)   
-        except Exception as e:
-            return Response({"error" : "Une erreur s'est produit"})
-        # Cas de pdv deja en base
-        # currentpdv = PointDeVente.objects.filter(username__iexact = nom_pdv, owner__exact = request.user).first()
-        currentpdv = serializer.instance
-        print("ListEvenetInst", listEventInstance)
-        print("CurrentPDV", currentpdv)
-
-        for event in listEventInstance:
-            print("ListEvenetInst", event)
-            print("CurrentPDV", currentpdv)
-            try:
-                if event and currentpdv:
-                    PointDeVenteToEvenement.objects.create(event = event, pdv = currentpdv)
-                    #recuperation du ticket de reffernce
-                    ticket = Ticket.objects.filter(event__exact = event, owner__exact = request.user).first()
-                    print("Le ticket de ref", ticket)
-                    AddTicket.objects.create(
-                        type_ticket = ticket.type_ticket,
-                        nb_ticket = 0,
-                        event = ticket.event,
-                        owner = ticket.owner,
-                        pointdevente = currentpdv)
-                    print('create PDVToEvent')
-                else :
-                    return Response({f"L'evenement {event} n'existe pas ou le pdv n'est pas specifié"})
-            except Exception as e:
-                return Response({f"erreur sur les données {e} "}, status=400)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-    
-
 
     def create(self, request, *args, **kwargs):
         print("DATAS", *args)
@@ -167,7 +103,6 @@ class RegisterPDV(generics.ListCreateAPIView):
                 request.data[key] = (value)
                 # print(value) 
             list_event =request.data.get('list_event')
-            request.data['username'] = "MyUsername"
             serializer.is_valid(raise_exception=True)
             email = serializer.validated_data.get('email')
             owner_id = request.data.get('user_id')

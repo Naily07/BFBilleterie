@@ -64,6 +64,8 @@ REST_FRAMEWORK = {
     ],    
 }
 
+AUTHENTICATION_BACKENDS = ['account.authenticationBack.UserAuthenticationBack', 'account.authenticationBack.PointDeVenteBackend', ]
+# AUTH_USER_MODEL = 'account.PointDeVente'
 ROOT_URLCONF = 'Server.urls'
 
 TEMPLATES = [

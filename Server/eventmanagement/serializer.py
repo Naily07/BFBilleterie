@@ -52,4 +52,19 @@ class TicketSerealiser(serializers.ModelSerializer):
             return {'id': event.id, 'nom': event.nom} 
         else:
             return None
+
+class AddTicketSerializer(serializers.SerializerMethodField):
+    type_ticket = serializers.CharField()
+    nb_ticket = serializers.IntegerField()
+    event = serializers.SerializerMethodField(read_only = True)
+    class Meta():
+        model = Ticket
+        fields = ['type_ticket', 'nb_ticket', 'event']
         
+    def get_event(self, obj):
+        event = obj.event
+        print(EventSerealiser(event).data)
+        if event:
+            return {'id': event.id, 'nom': event.nom} 
+        else:
+            return None
