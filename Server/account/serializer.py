@@ -10,11 +10,12 @@ class PointDeVenteSerializer(serializers.ModelSerializer):
     # tel =  serializers.CharField()
     email = serializers.EmailField(allow_blank = True)
     list_event = serializers.SerializerMethodField()
+    username = serializers.CharField()
     owner = serializers.SerializerMethodField(read_only = True)
     is_active = serializers.BooleanField(read_only=True)
     class Meta():
         model = PointDeVente
-        fields = ['lieu', "email", 'list_event', 'owner', "pk", "is_active"]
+        fields = ["username", 'lieu', "email", 'list_event', 'owner', "pk", "is_active"]
 
     def get_list_event(self, obj):
         from eventManagement.serializer import EventSerealiser
@@ -27,8 +28,11 @@ class PointDeVenteSerializer(serializers.ModelSerializer):
             for relation in relations:
                 print(relation)
             events = [relation.event for relation in relations]
-            eventsSerializer = EventSerealiser(events, many = True).data
-            return eventsSerializer
+            # eventsSerializer = EventSerealiser(events, many = True).data
+            list_event = []
+            for event in events:
+                list_event.append({"nom" : event.nom, "slug" : event.slug})
+            return list_event
         except Exception as e:
             print("Execpt list", e)
             return None

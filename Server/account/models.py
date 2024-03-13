@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser, User
 from django.contrib.auth.models import Group, Permission
 # Create your models here.
 
-class MyUser(User):
+class MyUser(AbstractUser):
     tel = models.TextField(blank = True)
     account_type = models.TextField(blank = True, null = True)
 
@@ -14,14 +14,14 @@ class MyUser(User):
         verbose_name = "GlobalUser"
                 
 
-class PointDeVente(AbstractUser):
+class PointDeVente(MyUser):
     groups = models.ManyToManyField(Group, related_name='pointdevente_groups', blank=True)
     user_permissions = models.ManyToManyField(
         Permission, related_name='pointdevente_user_permissions', blank=True
     )
     lieu = models.TextField()
-    tel = models.TextField(blank = True, null = True, default = None)
-    owner = models.ForeignKey(User, default = 1, on_delete = models.CASCADE, related_name = "pointdevente_related")
+    # tel = models.TextField(blank = True, null = True, default = None)
+    owner = models.ForeignKey(MyUser, default = 1, on_delete = models.CASCADE, related_name = "pointdevente_related")
     is_active = models.BooleanField(default = False)
 
     def __str__(self):

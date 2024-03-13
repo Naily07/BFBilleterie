@@ -123,18 +123,18 @@ class ListCreateTickets(OgranisateursEditorMixin, generics.ListCreateAPIView):
             raise Http404("L'événement spécifié n'a pas été trouvé.")
 
 
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 class ListCreateAddTickets(generics.ListAPIView):
     queryset = AddTicket.objects.all()
     serializer_class = AddTicketSerializer
-    # permission_classes = [IsAuthenticated, ]
-        
+    permission_classes = [AllowAny]
+
     def get(self, request, *args, **kwargs):
         get_event = self.get_Oneevent(request)
         print(get_event)
         if get_event:
-            tickets = AddTicket.objects.filter(event = get_event)
-            serealiser = AddTicketSerializer(tickets, many = True)
+            tickets = AddTicket.objects.filter(event_exact = get_event).first()
+            serealiser = AddTicketSerializer(tickets, many = True).data
             return Response(serealiser.data)
         else:
             return Response({"detail": "L'événement spécifié n'a pas été trouvé."}, status=404)
@@ -143,14 +143,14 @@ class ListCreateAddTickets(generics.ListAPIView):
         slug = self.kwargs.get('slug')
         print(slug)
         try:
-            pdv_id = request.user
-            print("pdvv", pdv_id)
-            curentPDV = PointDeVente.objects.get(id = pdv_id)
+            pdv = request.user
+            print("pdvv", pdv)
+            curentPDV = PointDeVente.objects.get(username = pdv)
             print("CurrentPDV", curentPDV)
             ownerPdv = curentPDV.owner
             get_event = Evenement.objects.filter(slug__iexact=slug, owner__exact = ownerPdv).first()
-            relation = PointDeVenteToEvenement.objects.filter(pdv__exact = pdv_id, event__exact = get_event)
-            print(relation.pdv)        
+            relation = PointDeVenteToEvenement.objects.filter(pdv__exact = pdv, event__exact = get_event).first()
+            print(relation)        
             return get_event
         except Evenement.DoesNotExist:
             raise Http404("L'événement spécifié n'a pas été trouvé.")
