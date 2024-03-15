@@ -9,4 +9,4 @@ class GlobalAdmin(admin.ModelAdmin):
     list_display = ("username", "email", "account_type")
 
 admin.site.register(PointDeVente, PointDeVenteAdmin)
-admin.site.register(MyUser, GlobalAdmin)
+admin.site.register(CustomUser, GlobalAdmin)

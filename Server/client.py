@@ -2,7 +2,7 @@ import requests
 import json
 from io import BytesIO
 # URL de l'API
-url = "http://127.0.0.1:8000/api/event/create-list-event/"
+url = "http://127.0.0.1:7500/api/event/create-list-event/"
 
 # Paramètres de la requête
 nom = "soiré"
@@ -34,7 +34,10 @@ for i, path in enumerate(image_spons_path):
         files.append((key, (path, sponsor_data, 'image/jpeg')))
 
 # Formater la requête
-response = requests.post(url, data=data, files=files)
+headers = {
+    "AUTHORIZATION" : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEwNDkyMzA2LCJpYXQiOjE3MTA0OTE0MDYsImp0aSI6IjYwNWU5ODM0NTRkNDQ5Zjk5NzMxYjBkNTJjMjE4ZTg0IiwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJtciIsImVtYWlsIjoibXllbWFpbEBnbWFpbC5jb20ifQ.1ALZXriCWpwlqLwbmFRpdJWMcciHvZM-J1w5XPYafis"
+}
+response = requests.post(url, data=data, files=files, headers=headers)
 
 # Vérifier le code de statut
 if response.status_code == 200 | response.status_code == 201 :

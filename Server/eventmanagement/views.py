@@ -149,7 +149,8 @@ class ListCreateAddTickets(generics.ListAPIView):
             print("CurrentPDV", curentPDV)
             ownerPdv = curentPDV.owner
             get_event = Evenement.objects.filter(slug__iexact=slug, owner__exact = ownerPdv).first()
-            relation = PointDeVenteToEvenement.objects.filter(pdv__exact = pdv, event__exact = get_event).first()
+            print("GetEvent", get_event)
+            relation = PointDeVenteToEvenement.objects.filter(pdv__exact = pdv).first()
             print(relation)        
             return get_event
         except Evenement.DoesNotExist:

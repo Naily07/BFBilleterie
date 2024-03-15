@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from account.models import PointDeVente
+from account.models import CustomUser, PointDeVente
 # Create your models here.
 
 class Evenement(models.Model):
@@ -9,7 +9,7 @@ class Evenement(models.Model):
     lieu = models.TextField(max_length = 25, default = None)
     image = models.ImageField(null = False, blank=False, upload_to="event/")
     slug = models.SlugField(unique=True, max_length=255)
-    owner = models.ForeignKey(User, default = 1, on_delete=models.CASCADE, related_name = "evenement_related")
+    owner = models.ForeignKey(CustomUser, default = 1, on_delete=models.CASCADE, related_name = "evenement_related")
     
     def __str__(self):
         return self.nom

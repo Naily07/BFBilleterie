@@ -32,23 +32,24 @@ class Login(APIView):
         # print("Acces", token)
         # userInfo = GoogleGetUserInfo(access_token)
         
-        username = request.data.get('username')#Login Google
+        sub = request.data.get('sub')#Login Google
         email = request.data.get('email')#Login Google
-        user =  User.objects.filter(email__iexact = email).first() 
-        pdv = PointDeVente.objects.filter(email__iexact = email).first()
+        user =  CustomUser.objects.filter(email__iexact = email, sub__iexact = sub).first() 
+        print("EOO", user, sub, email)
+        # pdv = PointDeVente.objects.filter(email__iexact = email).first()
         # print("GRR : ", group)
         getUser = object()
         try :
-            if user is None  and pdv is None:
+            if user is None :
                 raise AuthenticationFailed("le compte n'existe pas")
-            if pdv:
-                #POINT DE VENTE
-                print("GERRR  : ", pdv.groups.all())
-                if pdv.is_active == False:
-                    pdv.is_active = True
-                    pdv.username = username
-                    pdv.save()
-                getUser = pdv
+            # if pdv:
+            #     #POINT DE VENTE
+            #     print("GERRR  : ", pdv.groups.all())
+            #     if pdv.is_active == False:
+            #         pdv.is_active = True
+            #         pdv.username = username
+            #         pdv.save()
+            #     getUser = pdv
             else :
                 print("Group  : ", user.groups.all())
                 getUser = user
@@ -161,22 +162,26 @@ class RegisterPDV(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         print("DATAS", *args)
         datas = args[0]
-        serializer = self.get_serializer(data=request.data)
         try:
             for key, value in datas.items():
                 request.data[key] = (value)
                 # print(value) 
-            list_event =request.data.get('list_event')
-            serializer.is_valid(raise_exception=True)
-            owner_id = request.data.get('user_id')
-            email = serializer.validated_data.get('email')
+
+            email = request.data.get('email')
             username = email.split('@')[0] 
-            owner = MyUser.objects.filter(id__iexact = owner_id).first()
-            serializer.validated_data['username'] = username
+            request.data['username'] = username
+            print(request.data)
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            print(request.data)
+            list_event = request.data.get('list_event')
+            print(list_event)
+            owner_id = request.data.get('user_id')
+            owner = CustomUser.objects.filter(id__iexact = owner_id).first()
             print("OWN", owner, owner_id, email)
             listEventInstance = []
         except Exception as e :
-            return Response({f"exception {e}"})
+            return Response({f"exception {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         if list_event:
             for event in list_event:
                 print("evv", event)
@@ -184,6 +189,7 @@ class RegisterPDV(generics.ListCreateAPIView):
                 listEventInstance.append(eventinst)
                 if not eventinst:
                     return Response({"message" : f"L'evenement {event} n'existe pas"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
         try:
             if PointDeVente.objects.filter(email__iexact = email, owner__exact = owner).first():
                 #cas de même organisateur sur même pdv
@@ -193,7 +199,6 @@ class RegisterPDV(generics.ListCreateAPIView):
         
         try:
             self.perform_create(serializer)
-            print("Crée", serializer.data)
         except Exception as e:
             return Response({"message": f" Invalid Data {e}"}, status=status.HTTP_400_BAD_REQUEST)
         # Cas de pdv deja en base
@@ -225,7 +230,7 @@ class RegisterPDV(generics.ListCreateAPIView):
 
 from .serializer import UserSerialiser
 class RegisterUser(generics.ListCreateAPIView):
-    queryset = MyUser.objects.all()
+    queryset = CustomUser.objects.all()
     serializer_class = UserSerialiser
 
     def post(self, request, *args, **kwargs):
@@ -244,14 +249,14 @@ class RegisterUser(generics.ListCreateAPIView):
         # print("Acces", token)
 
         # userInfo = GoogleGetUserInfo(access_token)
-        
+        sub = request.data.get('sub')
         username = request.data.get('username')#Login Google
         email = request.data.get('email')#Login Google
         return self.create(request, *args, **kwargs)
 
         
 class RetrieveUpdateUser(generics.UpdateAPIView, generics.RetrieveAPIView):
-    queryset = MyUser.objects.all()
+    queryset = CustomUser.objects.all()
     serializer_class = UserSerialiser
     lookup_field = "pk"
 
@@ -266,7 +271,8 @@ class RetrieveUpdateUser(generics.UpdateAPIView, generics.RetrieveAPIView):
         try:
             group = Group.objects.get(name = f"{account_type}s")
             userInstance = serializer.instance
-            if userInstance.groups is None:
+            print("userInstance", userInstance.groups)
+            if not userInstance.groups.filter(name = account_type).exists() :
                 print("ADD")
                 userInstance.groups.add(group)
 

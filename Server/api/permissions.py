@@ -3,7 +3,7 @@ from rest_framework import permissions
 class IsOrganisateur(permissions.BasePermission):
     
     def has_permission(self, request, view):
-        print("permissions", request.user)
+        print("permissions", request.user.groups.all())
         if not (request.user.groups.filter(name='organisateurs').exists() |  request.user.is_superuser):
             return False            
         else :

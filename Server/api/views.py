@@ -14,7 +14,7 @@ from account.views import RegisterPDV
 from account.models import PointDeVente
 from account.serializer import PointDeVenteSerializer
 from rest_framework.generics import ListCreateAPIView
-from account.models import MyUser
+from account.models import CustomUser
 class TokenActivateView(ListCreateAPIView):
     queryset = PointDeVente.objects.all()
     serializer_class = PointDeVenteSerializer
@@ -22,7 +22,7 @@ class TokenActivateView(ListCreateAPIView):
     def perform_create(self, serializer):
         try :
             owner_id = self.request.data.get('user_id')
-            owner = MyUser.objects.filter(id__iexact = owner_id).first()
+            owner = CustomUser.objects.filter(id__iexact = owner_id).first()
             username = serializer.validated_data.get('username')
             print("NAME", username)
             if owner and username :
@@ -41,8 +41,8 @@ class TokenActivateView(ListCreateAPIView):
             print("isVerifier", decoded_token)
             result = RegisterPDV.create(self, request, decoded_token)
             print("Result", result)
-            if (result.status_code == 200) | (result.status_code == 201):
-                return RegisterPDV.get(self, request)
+            # if (result.status_code == 200) | (result.status_code == 201):
+            #     return RegisterPDV.get(self, request)
             return result
         except Exception as e:
             print("Error", e)        
