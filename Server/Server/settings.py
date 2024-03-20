@@ -60,17 +60,14 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES" : [
-        # "rest_framework.authentication.SessionAuthentication",                        
+        "rest_framework.authentication.SessionAuthentication",                        
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         # 'api.JWTAuthentication.CustomJWTAuthentication',
-        # 'rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication',
     ],    
 }
 
 AUTH_USER_MODEL = 'account.CustomUser'
 JWT_AUTH_USER_MODEL = 'account.CustomUser'
-# AUTHENTICATION_BACKENDS = ['account.authenticationBack.UserAuthenticationBack']
-# AUTH_USER_MODEL = "account.MyUser"
 ROOT_URLCONF = 'Server.urls'
 
 TEMPLATES = [
@@ -126,11 +123,10 @@ SIMPLE_JWT = {
   "TOKEN_OBTAIN_SERIALIZER": "pointdevente.serialiser.MyTokenObtainPairSerializer",
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(hours=1),
-    "ALGORITHM": "HS256",
+    # "ALGORITHM": "HS256",
     'AUTH_HEADER_TYPES': ('Bearer',),
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
-    'TOKEN_OBTAIN_SERIALIZER': 'api.serializer.MyTokenAuthentication',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     # "SECREY_KEY" : 's4567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 }

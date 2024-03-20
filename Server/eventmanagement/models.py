@@ -40,14 +40,14 @@ class Sponsor(models.Model):
 
 class TicketBase(models.Model):
     type_ticket = models.TextField(max_length = 24)
-    nb_ticket  = models.IntegerField()
+    nb_ticket  = models.IntegerField(default = 0, null = True)
     event = models.ForeignKey(Evenement, on_delete = models.SET_NULL, null = True, related_name = "%(class)s_related")#Addticket_related
 
     class Meta():
         abstract = True
 
 class AddTicket(TicketBase):
-    pointdevente = models.ForeignKey(PointDeVente, on_delete = models.CASCADE, null = True, related_name = "tickets")
+    pointdevente = models.ForeignKey(PointDeVente, on_delete = models.CASCADE, null = True, related_name = "%(class)s_related")
 
     def __str__(self):
             return self.type_ticket

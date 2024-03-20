@@ -2,7 +2,6 @@ from typing import Any
 from django.db import models
 from django.contrib.auth.models import User, AbstractBaseUser, UserManager, PermissionsMixin
 from django.contrib.auth.models import Group, Permission
-# from 
 # Create your models here.
 
     
@@ -28,11 +27,12 @@ class CustomUserManager(UserManager):
         extra_fields.setdefault("is_superuser", True)
         return self._create_user(username, email, password, **extra_fields)
 
+        
     
 from django.utils import timezone
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    sub = models.CharField(blank = True, default = '', unique = True, max_length = 50)
     email = models.EmailField(blank = True, default = '', unique = True)
+    sub = models.CharField(null = True, default= None, unique=True, max_length=50)
     username = models.CharField(max_length = 255, blank = True, default = '', unique = True)
     tel =  models.CharField(max_length = 50, blank = True, null = True)
     name = models.CharField(max_length = 255, blank = True, default = '')
@@ -60,7 +60,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.username
-
+    
+    def get_id(self):
+        return self.id
+    
 class PointDeVente(CustomUser):
-    owner = models.ForeignKey(CustomUser, default = 2, on_delete = models.CASCADE, related_name = "pointdevente_related")
+    lieu = models.CharField(max_length = 50, blank = True)
+    owner = models.ForeignKey(CustomUser, default = 1, on_delete = models.CASCADE, related_name = "pointdevente_related")
 

@@ -35,7 +35,7 @@ for i, path in enumerate(image_spons_path):
 
 # Formater la requête
 headers = {
-    "AUTHORIZATION" : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEwNDkyMzA2LCJpYXQiOjE3MTA0OTE0MDYsImp0aSI6IjYwNWU5ODM0NTRkNDQ5Zjk5NzMxYjBkNTJjMjE4ZTg0IiwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJtciIsImVtYWlsIjoibXllbWFpbEBnbWFpbC5jb20ifQ.1ALZXriCWpwlqLwbmFRpdJWMcciHvZM-J1w5XPYafis"
+    "AUTHORIZATION" : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEwNTI2MTg0LCJpYXQiOjE3MTA1MjUyODQsImp0aSI6IjE1NjhlODdjZjExNTRjYWViMTQ2NmRiYWM5MTE2ZGRlIiwidXNlcl9pZCI6MiwidXNlcm5hbWUiOiJtZSIsImVtYWlsIjoibWVAZ21haWwuY29tIn0.H83XJK2Z7Tmedw6RhHX1VEoMrgfNYknaI2zgD-1Xo9g"
 }
 response = requests.post(url, data=data, files=files, headers=headers)
 

@@ -20,5 +20,12 @@ def GoogleLoginGetToken(code):
     except Exception as e:
         return {"error": "Erreur de connexion", "details": str(e)}
 
-def GoogleGetUserInfo():
-    pass
+def GoogleGetUserInfo(token):
+    endpoint = "https://openidconnect.googleapis.com/v1/userinfo"
+    print("TOKEN", token)
+    hearder = {
+        "Authorization" : f"Bearer {str(token)}"
+    }
+    userinfo = requests.get(endpoint, headers=hearder)
+    print("INFO", userinfo.json())
+    return userinfo.json()
