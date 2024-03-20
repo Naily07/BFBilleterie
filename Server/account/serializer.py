@@ -22,12 +22,12 @@ class PointDeVenteSerializer(serializers.ModelSerializer):
         from eventManagement.serializer import EventSerealiser
         from eventManagement.models import PointDeVenteToEvenement
         try:
-            pdv_name = obj.id
+            pdv_id = obj.id
             #Get point de vente to Event avec le point de vente actuelle
-            relations = PointDeVenteToEvenement.objects.filter(pdv = pdv_name)
+            relations = PointDeVenteToEvenement.objects.filter(pdv = pdv_id)
             #Get event attribuer a cet point de vente
             for relation in relations:
-                print(relation)
+                print("relation username-event : ", relation)
             events = [relation.event for relation in relations]
             # eventsSerializer = EventSerealiser(events, many = True).data
             list_event = []
@@ -35,7 +35,7 @@ class PointDeVenteSerializer(serializers.ModelSerializer):
                 list_event.append({"nom" : event.nom, "slug" : event.slug})
             return list_event
         except Exception as e:
-            print("Execpt list", e)
+            print("Execpt list_event", e)
             return None
         
     def get_owner(self, obj):

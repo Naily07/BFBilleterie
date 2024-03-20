@@ -5,8 +5,8 @@ from io import BytesIO
 url = "http://127.0.0.1:7500/api/event/create-list-event/"
 
 # Paramètres de la requête
-nom = "soiré"
-lieu = "Tamatave"
+nom = "Smatchin"
+lieu = "Tana"
 
 # Fichier à envoyer
 # image = {"filename": "bloc-notes-avec-stylo-ouvert-mje7yb.jpg"}
