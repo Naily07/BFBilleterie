@@ -9,14 +9,15 @@ from .serializer import *
 from django.http import Http404
 from rest_framework import status
 from django.db import IntegrityError
-from api.mixins import OgranisateursEditorMixin
+from api.mixins import OrganisateursEditorMixin, UserQuerySet, PointDeVenteEditorMixin
+from account.serializer import PointDeVenteSerializer
 # Create your views here.
 
-class ListCreateSponsor(OgranisateursEditorMixin, generics.ListCreateAPIView):
+class ListSponsor(OrganisateursEditorMixin, generics.ListAPIView):
     queryset = Sponsor.objects.all()
     serializer_class = SponsorSerializer
 
-class ListCreateEvent(OgranisateursEditorMixin, generics.ListCreateAPIView):
+class ListCreateEvent(OrganisateursEditorMixin, UserQuerySet, generics.ListCreateAPIView):
     queryset = Evenement.objects.all()
     serializer_class = EventSerealiser
 
@@ -54,23 +55,25 @@ class ListCreateEvent(OgranisateursEditorMixin, generics.ListCreateAPIView):
             if(not user.is_anonymous):
                 serializer.save(owner = user, slug = slug)
             else:
+                print("default user 1 to event")
                 serializer.save(slug = slug)
 
         except IntegrityError as e:
             return Response({"error": f"perform_create {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
-class RemovEvent(OgranisateursEditorMixin, generics.RetrieveDestroyAPIView, generics.ListAPIView):
+class RemovEvent(OrganisateursEditorMixin, UserQuerySet, generics.RetrieveDestroyAPIView, generics.ListAPIView):
     queryset = Evenement.objects.all()
     serializer_class = EventSerealiser
     lookup_field = "slug"
 
 
-class DetailEvent(OgranisateursEditorMixin, generics.RetrieveAPIView):
+class DetailEvent(OrganisateursEditorMixin, UserQuerySet, generics.RetrieveAPIView):
     queryset = Evenement.objects.all()
     serializer_class = EventSerealiser
     lookup_field = "slug"
 
-class ListCreateTickets(OgranisateursEditorMixin, generics.ListCreateAPIView):
+
+class ListCreateTickets(OrganisateursEditorMixin, generics.ListCreateAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerealiser
 
@@ -101,7 +104,20 @@ class ListCreateTickets(OgranisateursEditorMixin, generics.ListCreateAPIView):
     def perform_create(self, serializer):
         get_event = self.get_Oneevent(request=self.request)
         #Ajout un evenement dans la clé etrangère de Ticket
-        serializer.save(event = get_event)             
+        serializer.save(event = get_event)          
+        #Ajout AddTicket to Pdv
+        owner = CustomUser.objects.filter(username = self.request.user).first()
+        print("owner Tickets", owner)
+        instanceTicket = serializer.instance
+        list_pdv = owner.pointdevente_related.all()
+
+        for pdv in list_pdv:
+            print(pdv)
+            AddTicket.objects.get_or_create(
+                type_ticket = instanceTicket.type_ticket,
+                event = instanceTicket.event,
+                pointdevente = pdv
+            )
         return Response(serializer.data, status=201)
         
     def get(self, request, *args, **kwargs):
@@ -123,36 +139,46 @@ class ListCreateTickets(OgranisateursEditorMixin, generics.ListCreateAPIView):
             raise Http404("L'événement spécifié n'a pas été trouvé.")
 
 
-from rest_framework.permissions import IsAuthenticated
-class ListAddTickets(generics.ListAPIView):
+
+#POINTDEVENTE
+from api.mixins import AddTicketQuerySet
+class ListAddTicketsPDV(PointDeVenteEditorMixin, AddTicketQuerySet, generics.ListAPIView):
     queryset = AddTicket.objects.all()
     serializer_class = AddTicketSerializer
-    # permission_classes = [IsAuthenticated, ]
-        
-    def get(self, request, *args, **kwargs):
-        get_event = self.get_Oneevent(request)
-        print(get_event)
-        if get_event:
-            tickets = AddTicket.objects.filter(event = get_event)
-            serealiser = AddTicketSerializer(tickets, many = True)
-            return Response(serealiser.data)
-        else:
-            return Response({"detail": "L'événement spécifié n'a pas été trouvé."}, status=404)
+
+    def add_qs_field_user(self):
+        pdv = self.request.user
+        pdv = PointDeVente.objects.filter(username__iexact = pdv).first()
+        print(pdv.owner)
+        return pdv.owner 
+
+
+#Organisateur 
+class ListAddTicketsOrganisateur(OrganisateursEditorMixin, AddTicketQuerySet, generics.ListCreateAPIView):
+    queryset = AddTicket.objects.all()
+    serializer_class = AddTicketSerializer    
+    # qs_field_pdv = 'pk' #Point de vente dans l'url, cible pour avoir le AddTicket
+    qs_field_event = 'slug'
+
+
+class RetrieveUpdateAddTickets(OrganisateursEditorMixin, AddTicketQuerySet, generics.UpdateAPIView, generics.RetrieveAPIView):
+    queryset = AddTicket.objects.all()
+    serializer_class = AddTicketSerializer    
+    lookup_field = 'pk'
+    qs_field = 'pdvId'
+
+    def patch(self, request, *args, **kwargs):
+        return super().patch(request, *args, **kwargs)
     
-    def get_Oneevent(self, request):
-        slug = self.kwargs.get('slug')
-        print(slug)
-        try:
-            pdv = request.user
-            print(pdv)
-            curentPDV = PointDeVente.objects.filter(username__iexact = pdv).first()
-            print("CurrentPDV", curentPDV)
-            ownerPdv = curentPDV.owner
-            get_event = Evenement.objects.filter(slug__iexact=slug, owner__exact = ownerPdv).first()
-            relation = PointDeVenteToEvenement.objects.filter(pdv__exact = pdv, event__exact = get_event)
-            print(relation.pdv)        
-            return get_event
-        except Evenement.DoesNotExist:
-            raise Http404("L'événement spécifié n'a pas été trouvé.")
-        except Exception as e:
-            raise BaseException(e)
+    def partial_update(self, request, *args, **kwargs):
+        return super().partial_update(request, *args, **kwargs)
+    
+    def perform_update(self, serializer):
+        return super().perform_update(serializer)
+    
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        pdv = self.get_object().pointdevente
+        serializer = self.get_serializer(instance)
+        print("Data", serializer.data)
+        return Response(serializer.data)

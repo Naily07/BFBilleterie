@@ -10,11 +10,13 @@ class PointDeVenteSerializer(serializers.ModelSerializer):
     # tel =  serializers.CharField()
     email = serializers.EmailField(allow_blank = True)
     list_event = serializers.SerializerMethodField()
+    username = serializers.CharField()
     owner = serializers.SerializerMethodField(read_only = True)
     is_active = serializers.BooleanField(read_only=True)
+    sub = serializers.CharField(read_only = True)
     class Meta():
         model = PointDeVente
-        fields = ['lieu', "email", 'list_event', 'owner', "pk", "is_active"]
+        fields = ["username", 'lieu', "email", 'list_event', 'owner', "pk", "is_active", 'sub', 'groups']
 
     def get_list_event(self, obj):
         from eventManagement.serializer import EventSerealiser
@@ -45,15 +47,17 @@ class PointDeVenteSerializer(serializers.ModelSerializer):
     
 class UserSerialiser(serializers.ModelSerializer):
     tel = serializers.CharField(allow_blank = True)
+    sub = serializers.CharField(allow_blank = True, read_only = True)
     account_type = serializers.ChoiceField(
         [
             ("client", "client"),
-            ("organisateur", "organisateur")
+            ("organisateur", "organisateur"),
+            ("pointdevente", "revendeur")
         ],
         allow_blank = True
     )
     
     class Meta():
-        model = MyUser
-        fields = [ "email", 'username', 'tel', "pk", "account_type"]
+        model = CustomUser
+        fields = [ "email", 'username', 'tel', "pk", "account_type", 'sub', 'groups']
     

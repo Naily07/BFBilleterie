@@ -9,10 +9,11 @@ from account.serializer import PointDeVente
 
 class SponsorSerializer(serializers.ModelSerializer):
     image = serializers.ImageField()
+
     
     class Meta():
         model = Sponsor
-        fields = ["image"]
+        fields = ["image", "pk"]
     
     
 class EventSerealiser(serializers.ModelSerializer):
@@ -57,8 +58,9 @@ class AddTicketSerializer(serializers.SerializerMethodField):
     type_ticket = serializers.CharField()
     nb_ticket = serializers.IntegerField()
     event = serializers.SerializerMethodField(read_only = True)
+
     class Meta():
-        model = Ticket
+        model = AddTicket
         fields = ['type_ticket', 'nb_ticket', 'event']
         
     def get_event(self, obj):
