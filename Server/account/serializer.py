@@ -7,7 +7,7 @@ from rest_framework_simplejwt.tokens import Token
 
 class PointDeVenteSerializer(serializers.ModelSerializer):
     lieu = serializers.CharField(allow_blank = True)
-    # tel =  serializers.CharField()
+    # tel =  serializers.CharField(allow_blank = True)
     email = serializers.EmailField(allow_blank = True)
     list_event = serializers.SerializerMethodField()
     username = serializers.CharField()
@@ -46,7 +46,7 @@ class PointDeVenteSerializer(serializers.ModelSerializer):
         return {"username" : owner.username, "id" : owner.id}
     
 class UserSerialiser(serializers.ModelSerializer):
-    tel = serializers.CharField(allow_blank = True)
+    tel = serializers.CharField(allow_blank = True, required=False)
     sub = serializers.CharField(allow_blank = True, read_only = True)
     account_type = serializers.ChoiceField(
         [
@@ -54,7 +54,8 @@ class UserSerialiser(serializers.ModelSerializer):
             ("organisateur", "organisateur"),
             ("pointdevente", "revendeur")
         ],
-        allow_blank = True
+        allow_blank = True,
+        required=False
     )
     
     class Meta():

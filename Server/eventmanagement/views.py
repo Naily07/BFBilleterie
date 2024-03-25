@@ -119,6 +119,13 @@ class ListCreateTickets(OrganisateursEditorMixin, generics.ListCreateAPIView):
                 event = instanceTicket.event,
                 pointdevente = pdv
             )
+        nb_tickets = instanceTicket.nb_ticket
+        
+        from .utils import createQrCode
+        i = 1
+        while i <= nb_tickets :
+            createQrCode(instanceTicket.id, i, instanceTicket.type_ticket, instanceTicket.event)
+            i+=1
         return Response(serializer.data, status=201)
         
     def get(self, request, *args, **kwargs):
@@ -139,6 +146,27 @@ class ListCreateTickets(OrganisateursEditorMixin, generics.ListCreateAPIView):
         except Evenement.DoesNotExist:
             raise Http404("L'événement spécifié n'a pas été trouvé.")
 
+class UpdateTickets(generics.UpdateAPIView, generics.RetrieveAPIView):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerealiser
+
+    def perform_update(self, serializer):
+        serializer.save()
+        instance = serializer.instance
+        updateNumber = instance.nb_ticket
+        print(instance.id)
+        try :
+            qr = TicketQrCode.objects.filter(ID_ticket__iexact = instance.id).last()
+            print("QR", qr)
+            if qr :
+                if updateNumber > qr.num :
+                    i = qr.num
+                    from .utils import createQrCode
+                    while i < updateNumber:
+                        i += 1
+                        createQrCode(instance.id, i, instance.type_ticket, instance.event)
+        except TicketQrCode.DoesNotExist:
+            print("Pas de Qr Code pour l'instant")
 
 
 #POINTDEVENTE

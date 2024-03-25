@@ -193,24 +193,25 @@ class RegisterUser(generics.ListCreateAPIView):
                 if key == "error":
                     error = value
                     break
-            print("Acces", token)
-                
+             
+            print("Acces", token)    
             userInfo = GoogleGetUserInfo(token)
-            
+            # sub = request.data.get('sub')#Login Google
+            # username = request.data.get('username')#Login Google
+            # email = request.data.get('email')#Login Google
             # sub = request.data.get('sub')#Login Google
             sub = userInfo['sub']
             email = userInfo['email']
             request.data['sub'] = sub
             request.data['email'] = email
             return self.create(request, *args, **kwargs)
+        
         except Exception as e:
             raise BaseException(e)
-        # sub = request.data.get('sub')#Login Google
-        # username = request.data.get('username')#Login Google
-        # email = request.data.get('email')#Login Google
     
     def perform_create(self, serializer):
-        serializer.save(is_active = True)
+        username = serializer.validated_data.get('email').split('@')[0]
+        serializer.save(is_active = False, username = username)
 
         
 class RetrieveUpdateUser(generics.UpdateAPIView, generics.RetrieveAPIView):
@@ -234,6 +235,7 @@ class RetrieveUpdateUser(generics.UpdateAPIView, generics.RetrieveAPIView):
             if not userInstance.groups.all() and not userInstance.groups.filter(name = group.name).exists() :
                 print("ADD")
                 userInstance.groups.add(group)
+                userInstance.is_active = True
                 serializer.save()                                
 
             print("Group", group)

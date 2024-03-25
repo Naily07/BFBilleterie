@@ -32,9 +32,9 @@ class CustomUserManager(UserManager):
 from django.utils import timezone
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(blank = True, default = '', unique = True)
-    sub = models.CharField(null = True, default= None, unique=True, max_length=50)
+    sub = models.CharField(null = True, default = None, unique=True, max_length=50)
     username = models.CharField(max_length = 255, blank = True, default = '', unique = True)
-    tel =  models.CharField(max_length = 50, blank = True, null = True, default = "")
+    tel =  models.CharField(max_length = 50, blank = True, null = True, default = None)
     name = models.CharField(max_length = 255, blank = True, default = '')
     is_active = models.BooleanField(default = False)
     is_staff = models.BooleanField(default = False)
@@ -42,7 +42,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     date_joined = models.DateTimeField(default = timezone.datetime.now)
     last_login = models.DateTimeField(null = True, blank = True)
-    account_type = models.CharField(max_length = 25, default = '', blank = True)
+    account_type = models.CharField(max_length = 25, default = None, blank = True, null = True)
 
     objects = CustomUserManager()
 

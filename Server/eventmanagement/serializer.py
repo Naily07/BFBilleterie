@@ -44,7 +44,7 @@ class TicketSerealiser(serializers.ModelSerializer):
     event = serializers.SerializerMethodField(read_only = True)
     class Meta():
         model = Ticket
-        fields = ['type_ticket', 'nb_ticket', 'event']
+        fields = ['type_ticket', 'nb_ticket', 'event', 'pk']
         
     def get_event(self, obj):
         event = obj.event
@@ -61,7 +61,7 @@ class AddTicketSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = AddTicket
-        fields = ['type_ticket', 'nb_ticket', 'event']
+        fields = ['type_ticket', 'nb_ticket', 'event', 'pk']
         
     def get_event(self, obj):
         event = obj.event
