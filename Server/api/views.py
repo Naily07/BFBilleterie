@@ -37,7 +37,7 @@ class TokenActivateView(generics.ListCreateAPIView):
                     pdv.groups.add(group)
                 else:
                     return Response({"Error" : f"Atribution de {account_type} group"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            return Response({"Error" : "Not Save"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # return Response({"Error" : "Not Save"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
             raise BaseException(e)
 

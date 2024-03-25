@@ -21,6 +21,7 @@ class ListCreateEvent(OrganisateursEditorMixin, UserQuerySet, generics.ListCreat
     queryset = Evenement.objects.all()
     serializer_class = EventSerealiser
 
+
     def create(self, request, *args, **kwargs):
         try :
             serializer = self.get_serializer(data=request.data)
@@ -160,7 +161,6 @@ class ListAddTicketsOrganisateur(OrganisateursEditorMixin, AddTicketQuerySet, ge
     # qs_field_pdv = 'pk' #Point de vente dans l'url, cible pour avoir le AddTicket
     qs_field_event = 'slug'
 
-
 class RetrieveUpdateAddTickets(OrganisateursEditorMixin, AddTicketQuerySet, generics.UpdateAPIView, generics.RetrieveAPIView):
     queryset = AddTicket.objects.all()
     serializer_class = AddTicketSerializer    
@@ -174,8 +174,12 @@ class RetrieveUpdateAddTickets(OrganisateursEditorMixin, AddTicketQuerySet, gene
         return super().partial_update(request, *args, **kwargs)
     
     def perform_update(self, serializer):
-        return super().perform_update(serializer)
-    
+        serializer.save()
+        addTicket = serializer.instance
+        ticket = Ticket.objects.get(event = addTicket.event, type_ticket = addTicket.type_ticket)
+        ticket.nb_ticket -= addTicket.nb_ticket
+        ticket.save()
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         pdv = self.get_object().pointdevente

@@ -33,6 +33,7 @@ class AddTicketQuerySet(generics.GenericAPIView):
         qs = super().get_queryset()
         filtre = {'event' : event}
         result = qs.filter(**filtre)
+
         if not result:
             raise Http404()
         return result

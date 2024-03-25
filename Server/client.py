@@ -5,7 +5,7 @@ from io import BytesIO
 url = "http://127.0.0.1:7500/api/event/create-list-event/"
 
 # Paramètres de la requête
-nom = "Smatchin"
+nom = "Miss"
 lieu = "Tana"
 
 # Fichier à envoyer
@@ -34,7 +34,7 @@ for i, path in enumerate(image_spons_path):
         files.append((key, (path, sponsor_data, 'image/jpeg')))
 
 # Formater la requête
-token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEwMDYwMjI2LCJpYXQiOjE3MTAwNTkzMjYsImp0aSI6ImI1ZDQ0ODZlMTJlODQ5NjZhZWVmNjNhZjA0OWU4MTViIiwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJhZWYiLCJlbWFpbCI6Imxlb25AZ21haWwuY28ifQ.qtVsYTafIGAw5AaiA3K9p90OdzOI0jK8GdsnisNhxg4"
+token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzExMDk1NzkzLCJpYXQiOjE3MTEwOTM5OTMsImp0aSI6IjkzNDE0NWUxNTI2MDQ3NWI5YzRhNmZmNWU3OTY0MzA5IiwidXNlcl9pZCI6MiwidXNlcm5hbWUiOiJsaW9uZWwiLCJlbWFpbCI6Imxlb0BnbWFpbC5jb20ifQ.ER9D7XQhaCthAR9NoDSeERK_HsJc4M-a2k-EXnOLats"
 Hearders = {
     "Authorization" : f"Bearer {token}"
 } 

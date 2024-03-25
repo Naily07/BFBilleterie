@@ -13,7 +13,7 @@ class MyTokenActivation(TokenObtainPairSerializer):
         access['list_event'] = list_event
         access['lieu'] = lieu
 
-        access.__setitem__('lifetime', str(timedelta(minutes=3)))  
+        access.__setitem__('lifetime', str(timedelta(minutes=10)))  
         token = str(access)
         print(token)
         return access

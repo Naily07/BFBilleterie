@@ -54,7 +54,7 @@ class TicketSerealiser(serializers.ModelSerializer):
         else:
             return None
 
-class AddTicketSerializer(serializers.SerializerMethodField):
+class AddTicketSerializer(serializers.ModelSerializer):
     type_ticket = serializers.CharField()
     nb_ticket = serializers.IntegerField()
     event = serializers.SerializerMethodField(read_only = True)
