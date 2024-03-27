@@ -9,7 +9,6 @@ from account.serializer import PointDeVente
 
 class SponsorSerializer(serializers.ModelSerializer):
     image = serializers.ImageField()
-
     
     class Meta():
         model = Sponsor

@@ -10,4 +10,8 @@ urlpatterns = [
 
     #Vue PDV
     path("<slug:slug>/list-Addtickets", ListAddTicketsPDV.as_view(), name="list-Addticket-pointdevente"),
+    
+    #Scan Code
+    path("<slug:slug>/ticket/<str:type_ticket>/<int:num>", ScanQrCode.as_view(),),
+
 ]

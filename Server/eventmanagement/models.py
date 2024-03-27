@@ -62,13 +62,13 @@ class ArchiveTicket(TicketBase):
         return self.type_ticket    
 
 class TicketQrCode(models.Model):
-    qr_image = models.ImageField(upload_to=('qr_code_img/'))#Donné type, num,  
+    qr_image = models.ImageField(upload_to=('qr_code_img/'))#Donné type, num, event
     num = models.DecimalField(max_digits = 6, decimal_places=0)    
-    ID_ticket = models.DecimalField(max_digits = 5, decimal_places=0)
+    type_ticket = models.TextField(max_length = 24)
     is_disabled = models.BooleanField(default = False)
     event = models.ForeignKey(Evenement, on_delete = models.SET_NULL, null = True, related_name = "%(class)s_related")#Addticket_related
     addOwner = models.ForeignKey(CustomUser, on_delete = models.CASCADE, null = True) 
     
     def __str__(self) -> str:
-        return f"{self.num} - {self.ID_ticket}"
+        return f"{self.num} - {self.event} - {self.type_ticket}"
     

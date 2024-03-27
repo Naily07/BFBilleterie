@@ -114,17 +114,18 @@ class ListCreateTickets(OrganisateursEditorMixin, generics.ListCreateAPIView):
 
         for pdv in list_pdv:
             print(pdv)
-            AddTicket.objects.get_or_create(
+            add = AddTicket.objects.get_or_create(
                 type_ticket = instanceTicket.type_ticket,
                 event = instanceTicket.event,
                 pointdevente = pdv
             )
+            print("get_or_create", add)
         nb_tickets = instanceTicket.nb_ticket
         
         from .utils import createQrCode
         i = 1
         while i <= nb_tickets :
-            createQrCode(instanceTicket.id, i, instanceTicket.type_ticket, instanceTicket.event)
+            createQrCode(i, instanceTicket.type_ticket, instanceTicket.event)
             i+=1
         return Response(serializer.data, status=201)
         
@@ -214,3 +215,26 @@ class RetrieveUpdateAddTickets(OrganisateursEditorMixin, AddTicketQuerySet, gene
         serializer = self.get_serializer(instance)
         print("Data", serializer.data)
         return Response(serializer.data)
+
+
+from rest_framework.views import APIView
+from .models import TicketQrCode
+class ScanQrCode(OrganisateursEditorMixin, APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            print(self.kwargs)
+            type_ticket = kwargs['type_ticket']
+            num = kwargs['num']
+            event_slug = kwargs['slug']
+            event = Evenement.objects.filter(slug__iexact = event_slug, owner__exact = request.user).first()
+            if not event:
+                return Response({"detail" : "Evenement n'exist pas"}, status=status.HTTP_400_BAD_REQUEST)
+            ticketQrCode = TicketQrCode.objects.filter(type_ticket = type_ticket, num = num , event = event).first()
+            if ticketQrCode and not ticketQrCode.is_disabled:
+                ticket = Ticket.objects.get(event__exact = event, type_ticket__iexact = type_ticket)
+                ticketSerializer = TicketSerealiser(ticket)
+                return Response(ticketSerializer.data, status=status.HTTP_200_OK)
+        except (TicketQrCode.DoesNotExist, Ticket.DoesNotExist):
+            raise Http404('Le ticket n\'exist pas')
+        except Exception as e:
+            raise BaseException(e)
