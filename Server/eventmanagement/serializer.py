@@ -14,18 +14,23 @@ class SponsorSerializer(serializers.ModelSerializer):
         model = Sponsor
         fields = ["image", "pk"]
     
-    
 class EventSerealiser(serializers.ModelSerializer):
     nom = serializers.CharField()
     lieu = serializers.CharField()
     slug = serializers.SlugField(read_only = True)
+    type_event = serializers.ChoiceField([
+            ('Festival', 'Festival'),
+            ('Soire', 'Soiré'),
+        ],
+        allow_blank = True
+    )
     sponsors_images = serializers.SerializerMethodField()
     image = serializers.ImageField()
     organisateur = serializers.SerializerMethodField(read_only = True)
 
     class Meta():
         model = Evenement
-        fields = ["nom", 'lieu', 'slug', "image", 'organisateur', 'sponsors_images']
+        fields = ["nom", 'lieu', 'slug', "image", 'organisateur', 'sponsors_images', 'type_event']
 
     def get_organisateur(self, obj):
         organisteur = obj.owner

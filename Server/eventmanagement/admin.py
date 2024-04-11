@@ -4,6 +4,10 @@ from .models import *
 admin.site.register(Evenement)
 admin.site.register(Sponsor)
 admin.site.register(PointDeVenteToEvenement)
-admin.site.register(AddTicket)
+
+class AddTicketAdmin(admin.ModelAdmin):
+    list_display = ('type_ticket', 'pointdevente', )
+
+admin.site.register(AddTicket, AddTicketAdmin)
 admin.site.register(Ticket)
 admin.site.register(TicketQrCode)

@@ -11,11 +11,14 @@ class PointDeVenteEditorMixin():
 
 class UserQuerySet(generics.GenericAPIView):
     qs_field = "owner"
+    qs_filter_type_event = ''
 
     def get_queryset(self):
         qs = super().get_queryset()
         owner = self.request.user
         data = {}
+        if len(self.qs_filter_type_event)>0:
+            data[self.qs_filter_type_event] =  self.kwargs['type_event']
         data[self.qs_field] = owner
         return qs.filter(**data)
 

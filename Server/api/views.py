@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework import generics
 import jwt
 from rest_framework_simplejwt.settings import api_settings
+from .serializer import CookieTokenRefreshSerializer
 # Create your views here.
 
 from account.views import RegisterPDV
@@ -14,7 +15,26 @@ from account.models import PointDeVente
 from account.serializer import PointDeVenteSerializer
 from account.models import CustomUser
 from django.contrib.auth.models import Group
+from django.conf import settings
 
+class CookieRefreshTokenView(TokenVerifyView):
+    serializer_class = CookieTokenRefreshSerializer
+    
+    def finalize_response(self, request, response, *args, **kwargs):
+        if response.data.get('refresh'):
+            refresh = response.data.get('refresh')
+            response.set_cookie(
+                key=settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'],
+                value= refresh,
+                expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'], 
+                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'], 
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAINE'],
+            )
+            del response.data['refresh']
+        return super().finalize_response(request, response, *args, **kwargs)
+    
 class TokenActivateView(generics.ListCreateAPIView):
     queryset = PointDeVente.objects.all()
     serializer_class = PointDeVenteSerializer
@@ -39,7 +59,7 @@ class TokenActivateView(generics.ListCreateAPIView):
                     return Response({"Error" : f"Atribution de {account_type} group"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             # return Response({"Error" : "Not Save"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
-            raise BaseException(e)
+            raise e
 
     def get(self, request):
         token = (request.query_params.get('token'))

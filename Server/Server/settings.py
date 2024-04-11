@@ -25,6 +25,7 @@ SECRET_KEY = 'django-insecure-(y@9j2qje$c3t#=iaij@+&ibzpew$+pjqa2tt*kv4g)+m$f@vt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# ALLOWED_HOSTS = ['192.168.137.1', '127.0.0.1']
 ALLOWED_HOSTS = []
 
 
@@ -58,8 +59,9 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES" : [
-        "rest_framework.authentication.BasicAuthentication",                        
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        "rest_framework.authentication.BasicAuthentication", 
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',               
+        'api.authentication.CustomJWT',
     ],    
 }
 
@@ -116,17 +118,26 @@ AUTH_PASSWORD_VALIDATORS = [
 #simpleJWT
 from datetime import timedelta
 SIMPLE_JWT = {
-  "TOKEN_OBTAIN_SERIALIZER": "pointdevente.serialiser.MyTokenObtainPairSerializer",
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(hours=1),
-    # "ALGORITHM": "HS256",
+  "TOKEN_OBTAIN_SERIALIZER": "api.serializer.MyTokenAuthentication",
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=2),
+    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=15),
+    "ALGORITHM": "HS256",
+    'AUTH_COOKIE': 'access',  # Nom du cookie à envoyer
+    'AUTH_COOKIE_REFRESH': 'refresh',  # Nom du cookie à envoyer
+    'AUTH_COOKIE_HTTP_ONLY': True, # Rendre le cookie accessible uniquement par HTTP
+    'AUTH_COOKIE_SAMESITE': "None",  # Politique SameSite pour le cookie (Lax, Strict ou None)
+    'AUTH_COOKIE_SECURE': True,  # Rendre le cookie sécurisé (nécessite HTTPS)
+    'AUTH_COOKIE_DOMAINE' : None,
+
     'AUTH_HEADER_TYPES': ('Bearer',),
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     # "SECREY_KEY" : 's4567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 }
-
+# SESSION_COOKIE_SAMESITE = 'Lax'
+# CSRF_COOKIE_SAMESITE = 'Lax'
+# SESSION_COOKIE_SECURE = True
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -146,9 +157,11 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "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"
 BASE_FRONTEND_URL = os.environ.get('DJANGO_BASE_FRONTEND_URL', default='http://localhost:5173')
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Ajoutez l'origine de votre client React
+    "http://localhost:5173", 
 ]
-CORS_ALLOW_ALL_ORIGINS = True  # Allow access from all origins (development only!)
+CORS_ALLOW_CREDENTIALS = True
+
+# CORS_ALLOW_ALL_ORIGINS = True  # Allow access from all origins (development only!)
 CORS_ALLOW_METHODS = [
     "DELETE",
     "GET",
@@ -163,7 +176,7 @@ CORS_ALLOW_METHODS = [
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-BACKEND_URL ='http://localhost:8000'
+BACKEND_URL ='http://127.0.0.1:7500'
 STATIC_URL = 'static/'
 MEDIA_URL = '/images/'
 MEDIA_ROOT = BASE_DIR / "static/images"
@@ -177,7 +190,7 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "leonelheri25@gmail.com"
-EMAIL_HOST_PASSWORD = "mykz drzw lrmk lsiw "
+EMAIL_HOST_PASSWORD = "mykz drzw lrmk lsiw"
 EMAIL_USE_TLS = True
 
 # Default primary key field type

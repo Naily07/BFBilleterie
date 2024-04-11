@@ -61,4 +61,3 @@ class UserSerialiser(serializers.ModelSerializer):
     class Meta():
         model = CustomUser
         fields = [ "email", 'username', 'tel', "pk", "account_type", 'sub', 'groups']
-    

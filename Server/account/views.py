@@ -14,9 +14,10 @@ from api.serializer import MyTokenAuthentication
 # Create your views here.
 
 class Login(APIView):
-
+    permission_classes = []
     def post(self, request):
         try :
+            print(request)
             # code = request.data.get('code')
             # token = GoogleLoginGetToken(code)
             # items = token.items()
@@ -39,6 +40,7 @@ class Login(APIView):
         except Exception as e:
             raise BaseException(e)
         
+       
         user =  CustomUser.objects.filter(email__iexact = email, sub__iexact = sub).first() 
         if user is None:
             #First connexion
@@ -55,17 +57,62 @@ class Login(APIView):
 
             access, refresh = MyTokenAuthentication.get_token(user)
             response = Response()
-            # response.set_cookie(key='jwt', value=token, httponly=True)
             response.data = {
                 "access_token": f"{access}",
                 "refresh_token": f"{refresh}"
             }
+            response.set_cookie(
+                key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+                value= access,
+                expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'], 
+                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'], 
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAINE'],
+                # partitioned = True
+            )
+            response.set_cookie(
+                key=settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'],
+                value= refresh,
+                expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'], 
+                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'], 
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAINE'],
+            )
+            # response.set_cookie('jwt_refresh', refresh)
             response.status_code = status.HTTP_200_OK
             return response  
+        
         except Exception as e:
             raise AuthenticationFailed(f"Login error {e}")
- 
-    
+
+# class GetUserInfo(APIView):
+#     queryset = CustomUser
+#     serializer_class = UserSerialiser
+
+#     def get(self, request):
+#         pass
+
+from django.conf import settings
+from rest_framework_simplejwt import tokens
+from rest_framework.permissions import IsAuthenticated
+
+class LogoutUser(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        try:
+            refresh = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
+            token = tokens.RefreshToken(refresh)
+            token.blacklist()
+
+            res = Response()
+            res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
+            res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
+            res.status_code = status.HTTP_200_OK
+            return res
+        except Exception as e:
+            raise Exception(e) 
 
 from eventManagement.models import Evenement, PointDeVenteToEvenement, Ticket, AddTicket
 from api.serializer import MyTokenActivation
@@ -84,14 +131,19 @@ class RegisterPDV(generics.ListCreateAPIView):
         token = MyTokenActivation.get_token(owner, email, list_event, lieu)
 
         if request.method == "POST" :
-            # backEndUrl = settings.BACKEND_URL
-            # activation_link = f"{backEndUrl}/api/token/activate?token={token}"
-            # subject = "Accepter l'invitation de l'organisateur"
-            # message = f"accepter l'invation {activation_link}"
-            # from_email = 'leonelheri25@gmail.com'
-            # plain_message = (message)
-            # send_mail(subject = subject, message = message, from_email = from_email, recipient_list = [email])
-            return Response({"message": "Un e-mail d'activation a été envoyé avec succès."}, status=status.HTTP_201_CREATED)
+            try:
+                backEndUrl = settings.BACKEND_URL
+                activation_link = f"{backEndUrl}/api/token/activate?token={token}"
+                subject = "Accepter l'invitation de l'organisateur"
+                message = f"accepter l'invation {activation_link}"
+                print(activation_link)
+                from_email = 'leonelheri25@gmail.com'
+                plain_message = (message)
+                send_mail(subject = subject, message = message, from_email = from_email, recipient_list = [email])
+                return Response({"message": "Un e-mail d'activation a été envoyé avec succès."}, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                return Response({'message' : "erreur serveur"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({'message' : "erreur d'envoie"}, status=status.HTTP_400_BAD_REQUEST)
 
     
     def create(self, request, *args, **kwargs):
@@ -115,6 +167,7 @@ class RegisterPDV(generics.ListCreateAPIView):
             listEventInstance = []
         except Exception as e :
             return Response({f"exception {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
         if list_event:
             for event in list_event:
                 eventinst = Evenement.objects.filter(nom__iexact = event).first()
@@ -129,6 +182,7 @@ class RegisterPDV(generics.ListCreateAPIView):
             return Response({"error" : f"Une erreur s'est produit {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         try:
+            #Perform_create dans la class api/token/activate
             self.perform_create(serializer)
         except Exception as e:
             return Response({"message": f" Invalid Data {e}"}, status=status.HTTP_400_BAD_REQUEST)

@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import *
 urlpatterns = [
-    path("create-list-event/", ListCreateEvent.as_view(), name="list-event"),
+    path("list/", ListCreateEvent.as_view(), name="list-event"),
+    path('list/<str:type_event>/', ListTypeEvent.as_view(), name = 'list-type-event' ),
     path("<slug:slug>/", DetailEvent.as_view(), name="detail-event"),
     path("remove-event/<slug:slug>/", RemovEvent.as_view(), name="delete-event"),
     path("<slug:slug>/tickets", ListCreateTickets.as_view(), name="list-ticket"),

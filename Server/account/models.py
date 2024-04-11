@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, AbstractBaseUser, UserManager, Perm
 from django.contrib.auth.models import Group, Permission
 # Create your models here.
 
-    
+
 class CustomUserManager(UserManager):
     def _create_user(self, username: str, email: str , password: str | None, **extra_fields: Any):
         if not email:

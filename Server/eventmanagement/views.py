@@ -13,11 +13,11 @@ from api.mixins import OrganisateursEditorMixin, UserQuerySet, PointDeVenteEdito
 from account.serializer import PointDeVenteSerializer
 # Create your views here.
 
-class ListSponsor(OrganisateursEditorMixin, generics.ListAPIView):
+class ListSponsor(generics.ListAPIView):
     queryset = Sponsor.objects.all()
     serializer_class = SponsorSerializer
 
-class ListCreateEvent(OrganisateursEditorMixin, UserQuerySet, generics.ListCreateAPIView):
+class ListCreateEvent( generics.ListCreateAPIView):
     queryset = Evenement.objects.all()
     serializer_class = EventSerealiser
 
@@ -26,11 +26,13 @@ class ListCreateEvent(OrganisateursEditorMixin, UserQuerySet, generics.ListCreat
         try :
             serializer = self.get_serializer(data=request.data)
             # image = request.FILES
+            print(request.data.get('nom'))
             spons = request.FILES.getlist('sponsor_image')
             #Recuperation de sponsors image lien
-            serializer.is_valid(raise_exception=True)
             if not serializer.is_valid():
+                print(serializer.errors)
                 return Response({"message":"Evenement existe déjà"}, status=status.HTTP_400_BAD_REQUEST)
+            serializer.is_valid(raise_exception=True)
             
             self.perform_create(serializer)
             currentEvent = serializer.instance
@@ -49,6 +51,7 @@ class ListCreateEvent(OrganisateursEditorMixin, UserQuerySet, generics.ListCreat
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
     def perform_create(self, serializer):
+        print("perform")
         try:
             user = self.request.user    
             print("slug", slugify(serializer.validated_data.get('nom')))
@@ -62,13 +65,20 @@ class ListCreateEvent(OrganisateursEditorMixin, UserQuerySet, generics.ListCreat
         except IntegrityError as e:
             return Response({"error": f"perform_create {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
-class RemovEvent(OrganisateursEditorMixin, UserQuerySet, generics.RetrieveDestroyAPIView, generics.ListAPIView):
+
+class ListTypeEvent(generics.ListAPIView, ):
+    queryset = Evenement.objects.all()
+    serializer_class = EventSerealiser
+    qs_filter_type_event = 'type_event'
+
+
+class RemovEvent(generics.RetrieveDestroyAPIView, generics.ListAPIView):
     queryset = Evenement.objects.all()
     serializer_class = EventSerealiser
     lookup_field = "slug"
 
 
-class DetailEvent(OrganisateursEditorMixin, UserQuerySet, generics.RetrieveAPIView):
+class DetailEvent(UserQuerySet, generics.RetrieveAPIView):
     queryset = Evenement.objects.all()
     serializer_class = EventSerealiser
     lookup_field = "slug"
@@ -233,6 +243,7 @@ class ScanQrCode(OrganisateursEditorMixin, APIView):
             if ticketQrCode and not ticketQrCode.is_disabled:
                 ticket = Ticket.objects.get(event__exact = event, type_ticket__iexact = type_ticket)
                 ticketSerializer = TicketSerealiser(ticket)
+                ticketQrCode.is_disabled = True
                 return Response(ticketSerializer.data, status=status.HTTP_200_OK)
         except (TicketQrCode.DoesNotExist, Ticket.DoesNotExist):
             raise Http404('Le ticket n\'exist pas')

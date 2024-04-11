@@ -8,6 +8,7 @@ from account.models import CustomUser, PointDeVente
 class Evenement(models.Model):
     nom = models.TextField(max_length = 255, unique = True)
     lieu = models.TextField(max_length = 25, default = None)
+    type_event = models.TextField(max_length = 50, default = "", blank = True)
     image = models.ImageField(null = False, blank=False, upload_to="event/")
     slug = models.SlugField(unique=True, max_length=255)
     owner = models.ForeignKey(CustomUser, default = 1, on_delete=models.CASCADE, related_name = "evenement_related")
@@ -53,7 +54,7 @@ class AddTicket(TicketBase):
     def __str__(self):
             return self.type_ticket
 
-class Ticket(TicketBase):
+class Ticket(TicketBase): # egale ticker de base
     def __str__(self):
         return self.type_ticket
 

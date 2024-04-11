@@ -1,7 +1,9 @@
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenObtainSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenObtainSerializer, TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import Token
 from datetime import timedelta
 from rest_framework_simplejwt.settings import api_settings
+from rest_framework_simplejwt import exceptions
+
 
 class MyTokenActivation(TokenObtainPairSerializer):
     @classmethod
@@ -26,4 +28,15 @@ class MyTokenAuthentication(TokenObtainPairSerializer):
         token_data['email'] = user.email
         access = token_data.access_token
         refresh = token_data
+        
         return access, refresh
+
+class CookieTokenRefreshSerializer(TokenRefreshSerializer):
+    refresh = None
+    def validate(self, attrs) :
+        attrs['refresh'] = self.context['request'].COOKIES.get("refresh")
+        try :
+            if attrs['refresh']:
+                return super().validate(attrs)
+        except :
+            raise exceptions.InvalidToken('Refresh Token invalid')
