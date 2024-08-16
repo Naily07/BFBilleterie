@@ -5,14 +5,22 @@ urlpatterns = [
     path('list/<str:type_event>/', ListTypeEvent.as_view(), name = 'list-type-event' ),
     path("<slug:slug>/", DetailEvent.as_view(), name="detail-event"),
     path("remove-event/<slug:slug>/", RemovEvent.as_view(), name="delete-event"),
-    path("<slug:slug>/tickets", ListCreateTickets.as_view(), name="list-ticket"),
+    path("<slug:slug>/list-tickets", ListCreateTickets.as_view(), name="list-ticket"),
+    path("<slug:slug>/create-tickets", BulkCreateTicket.as_view(), name="list-ticket"),
     path("<slug:slug>/update-ticket/<int:pk>", UpdateTickets.as_view(), name="update-ticket"),
     path("list-sponsors/", ListSponsor.as_view(), name="list-sponsor"),
+    path("<slug:slug>/delete-ticket/<int:pk>", DeleteTicket.as_view(), name="list-sponsor"),
+    #client View
+    path("<slug:slug>/buy-ticket", BuyTicket.as_view(), name="list-sponsor"),
+    
+    #AddTicket
 
     #Vue PDV
     path("<slug:slug>/list-Addtickets", ListAddTicketsPDV.as_view(), name="list-Addticket-pointdevente"),
     
     #Scan Code
     path("<slug:slug>/ticket/<str:type_ticket>/<int:num>", ScanQrCode.as_view(),),
+    path("<slug:slug>/Qr-code", ListQrCode.as_view(), name="list-sponsor"),
+
 
 ]

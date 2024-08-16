@@ -25,6 +25,9 @@ class MyTokenAuthentication(TokenObtainPairSerializer):
     def get_token(cls, user):
         token_data = super().get_token(user)
         token_data['username'] = user.username
+        token_data['account_type'] = user.account_type
+        token_data['pk'] = user.pk
+        print(user.account_type)
         token_data['email'] = user.email
         access = token_data.access_token
         refresh = token_data
@@ -35,6 +38,7 @@ class CookieTokenRefreshSerializer(TokenRefreshSerializer):
     refresh = None
     def validate(self, attrs) :
         attrs['refresh'] = self.context['request'].COOKIES.get("refresh")
+        print("Attr", self.context['request'].COOKIES.get("refresh"))
         try :
             if attrs['refresh']:
                 return super().validate(attrs)

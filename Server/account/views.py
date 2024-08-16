@@ -9,15 +9,23 @@ from rest_framework.response import Response
 from .utils import GoogleLoginGetToken, GoogleGetUserInfo
 from rest_framework import status
 from rest_framework.views import APIView
+from api.mixins import OwnerQuerySet
 from rest_framework.exceptions import AuthenticationFailed
 from api.serializer import MyTokenAuthentication
+from .serializer import UserSerialiser
+from api.mixins import OrganisateursEditorMixin
+from django.conf import settings
+from rest_framework_simplejwt import tokens
+from rest_framework.permissions import IsAuthenticated
+
 # Create your views here.
 
-class Login(APIView):
-    permission_classes = []
-    def post(self, request):
-        try :
-            print(request)
+class RegisterUser(generics.ListCreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerialiser
+
+    def post(self, request, *args, **kwargs):
+        try:    
             # code = request.data.get('code')
             # token = GoogleLoginGetToken(code)
             # items = token.items()
@@ -30,18 +38,100 @@ class Login(APIView):
             #     if key == "error":
             #         error = value
             #         break
-            # print("Acces", token)
+             
+            # print("Post", token)    
             # userInfo = GoogleGetUserInfo(token)
-            # print(userInfo)
-            sub = request.data.get('sub')#Login Google
-            email = request.data.get('email')#Login Google
+            # sub = request.data.get('sub')#Login Google
+            # username = request.data.get('username')#Login Google
+            # email = request.data.get('email')#Login Google
+            # sub = request.data.get('sub')#Login Google
             # sub = userInfo['sub']
-            # email = userInfo["email"]
+            # email = userInfo['email']
+            # request.data['sub'] = sub
+            # request.data['email'] = email
+            print("PostData", request.data)
+            return self.create(request, *args, **kwargs)
+        
+        except Exception as e:
+            raise BaseException(e)
+    
+    def perform_create(self, serializer):
+        username = serializer.validated_data.get('email').split('@')[0]
+        serializer.save(is_active = False, username = username)
+
+      
+class Login(APIView):
+    permission_classes = []
+    def post(self, request):
+        email = request.data.get('email')
+        sub = request.data.get('sub')
+        print("EMM", email, sub)
+        try :
+            user =  CustomUser.objects.filter(email__iexact = email, sub__iexact = sub).first()
+            access, refresh = MyTokenAuthentication.get_token(user)
+            response = Response()
+            response.data = {
+                "access_token": f"{access}",
+                "refresh_token": f"{refresh}"
+            }
+            response.set_cookie(
+                key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+                value= access,
+                expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'], 
+                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'], 
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAINE'],
+                # partitioned = True
+            )
+            response.set_cookie(
+                key=settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'],
+                value= refresh,
+                expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'], 
+                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'], 
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAINE'],
+            )
+            # response.set_cookie('jwt_refresh', refresh)
+            response.status_code = status.HTTP_200_OK
+            return response 
+        except  CustomUser.DoesNotExist as e:
+            raise AuthenticationFailed(f"Login error {e}")
         except Exception as e:
             raise BaseException(e)
         
-       
-        user =  CustomUser.objects.filter(email__iexact = email, sub__iexact = sub).first() 
+class LoginWithCode(APIView):
+    permission_classes = []
+    def post(self, request):
+        email = ''
+        sub = ''
+        try :
+            # print("Reqqq", request.data)
+            code = request.data.get('code')
+            token = GoogleLoginGetToken(code)
+            items = token.items()
+            token = ""
+            error = ""
+            for key, value in items:
+                if key == "access_token":
+                    token = value
+                    break
+                if key == "error":
+                    error = value
+                    break
+            # print("Acces", token)
+            userInfo = GoogleGetUserInfo(token)
+            print(userInfo)
+            # sub = request.data.get('sub')#Login Google
+            # email = request.data.get('email')#Login Google
+            sub = userInfo['sub']
+            email = userInfo["email"]
+        except Exception as e:
+            raise BaseException(e)
+        print(email)
+        user =  CustomUser.objects.filter(email__iexact = email, sub__iexact = sub).first()   
+        isCreated = False
         if user is None:
             #First connexion
             user = PointDeVente.objects.filter(email__iexact = email).first()
@@ -49,12 +139,23 @@ class Login(APIView):
                 user.is_active = True
                 user.sub = sub
                 user.save()
+            else:
+                # request.data['sub'] = sub ## Creation du user
+                # request.data['email'] = email
+                # code = request.data.pop('code')
+                print(isCreated)
+                user, isCreated = CustomUser.objects.get_or_create(email = email, sub = sub, username=email.split('@')[0])
+                # request.data['email'].split('@')[0] 
 
         print("EOO", user, sub, email)
         try :
             if user is None :
-                raise AuthenticationFailed("le compte n'existe pas")
-
+                raise AuthenticationFailed("Erreur de creation de compte")
+            if isCreated:
+                return Response(data=UserSerialiser(user).data, status=status.HTTP_201_CREATED)
+            elif not isCreated and not user.is_active:
+                return Response(data=UserSerialiser(user).data, status=status.HTTP_201_CREATED)
+            print("USSs", user)
             access, refresh = MyTokenAuthentication.get_token(user)
             response = Response()
             response.data = {
@@ -87,16 +188,6 @@ class Login(APIView):
         except Exception as e:
             raise AuthenticationFailed(f"Login error {e}")
 
-# class GetUserInfo(APIView):
-#     queryset = CustomUser
-#     serializer_class = UserSerialiser
-
-#     def get(self, request):
-#         pass
-
-from django.conf import settings
-from rest_framework_simplejwt import tokens
-from rest_framework.permissions import IsAuthenticated
 
 class LogoutUser(APIView):
     permission_classes = [IsAuthenticated]
@@ -121,11 +212,13 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 class RegisterPDV(generics.ListCreateAPIView):
     queryset = PointDeVente.objects.all()
     serializer_class = PointDeVenteSerializer
+    permission_classes = [IsAuthenticated,]
 
     def post(self, request, *args, **kwargs):
         #Creation token sur les données entrer par l'organisateurs
         email = request.data.get('email')
         owner = request.user
+        print("USSS", owner)
         list_event = request.data.get('list_event')
         lieu = request.data.get('lieu')
         token = MyTokenActivation.get_token(owner, email, list_event, lieu)
@@ -224,50 +317,12 @@ class UpdatePDV(generics.RetrieveAPIView, generics.UpdateAPIView):
     lookup_field = 'pk'
 
 
-class ListPDV(generics.ListAPIView):
+class ListPDV(generics.ListAPIView, OrganisateursEditorMixin, OwnerQuerySet):
     queryset = PointDeVente.objects.all()
     serializer_class = PointDeVenteSerializer
-
-from .serializer import UserSerialiser
-class RegisterUser(generics.ListCreateAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = UserSerialiser
-
-    def post(self, request, *args, **kwargs):
-        try:    
-            code = request.data.get('code')
-            token = GoogleLoginGetToken(code)
-            items = token.items()
-            token = ""
-            error = ""
-            for key, value in items:
-                if key == "access_token":
-                    token = value
-                    break
-                if key == "error":
-                    error = value
-                    break
-             
-            print("Acces", token)    
-            userInfo = GoogleGetUserInfo(token)
-            # sub = request.data.get('sub')#Login Google
-            # username = request.data.get('username')#Login Google
-            # email = request.data.get('email')#Login Google
-            # sub = request.data.get('sub')#Login Google
-            sub = userInfo['sub']
-            email = userInfo['email']
-            request.data['sub'] = sub
-            request.data['email'] = email
-            return self.create(request, *args, **kwargs)
-        
-        except Exception as e:
-            raise BaseException(e)
     
-    def perform_create(self, serializer):
-        username = serializer.validated_data.get('email').split('@')[0]
-        serializer.save(is_active = False, username = username)
 
-        
+  
 class RetrieveUpdateUser(generics.UpdateAPIView, generics.RetrieveAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerialiser
@@ -281,18 +336,51 @@ class RetrieveUpdateUser(generics.UpdateAPIView, generics.RetrieveAPIView):
 
     def perform_update(self, serializer):
         account_type = serializer.validated_data.get('account_type')
-        print("UP")
+        print("UP", account_type)
+        group = Group.objects.get(name = f"{account_type}s")
+        userInstance = serializer.instance
         try:
-            group = Group.objects.get(name = f"{account_type}s")
-            userInstance = serializer.instance
-            print("userInstance", userInstance.groups)
-            if not userInstance.groups.all() and not userInstance.groups.filter(name = group.name).exists() :
-                print("ADD")
-                userInstance.groups.add(group)
-                userInstance.is_active = True
-                serializer.save()                                
+            print("userInstanceGroup", userInstance.groups.all())
+            if not userInstance.groups.all() and not userInstance.groups.filter(name=group.name).exists():
+                print("Adding user to group:", group)
+                try:
+                    userInstance.groups.add(group)
+                    userInstance.is_active = True
+                    serializer.save()
+                    print("User added to group and activated:", userInstance)
+                    # access, refresh = MyTokenAuthentication.get_token(userInstance)
+                    # response = Response()
+                    # response.data = {
+                    #     "access_token": f"{access}",
+                    #     "refresh_token": f"{refresh}"
+                    # }
+                    # print("TOKEN", response.data)
+                    # response.set_cookie(
+                    #     key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+                    #     value= access,
+                    #     expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+                    #     httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'], 
+                    #     samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'], 
+                    #     secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                    #     domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAINE'],
+                    #     # partitioned = True
+                    # )
+                    # response.set_cookie(
+                    #     key=settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'],
+                    #     value= refresh,
+                    #     expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+                    #     httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'], 
+                    #     samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'], 
+                    #     secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                    #     domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAINE'],
+                    # )
+                    # # response.set_cookie('jwt_refresh', refresh)
+                    # response.status_code = status.HTTP_200_OK
+                    # return response  
+                except Exception as e:
+                    raise BaseException(e)
+            else:
+                print("User already in a group:", group)                             
 
-            print("Group", group)
-            print("userInstance", userInstance)
         except Exception as e:
             return Response({"message" : f"Groupe {account_type} n'existe pas "}) 

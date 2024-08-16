@@ -11,13 +11,16 @@ class Evenement(models.Model):
     type_event = models.TextField(max_length = 50, default = "", blank = True)
     image = models.ImageField(null = False, blank=False, upload_to="event/")
     slug = models.SlugField(unique=True, max_length=255)
+    date = models.DateField(null=True, default=None)
+    H_debut = models.TimeField(null=True, default=None)
+    H_fin = models.TimeField(null=True, default=None)
     owner = models.ForeignKey(CustomUser, default = 1, on_delete=models.CASCADE, related_name = "evenement_related")
     
     def __str__(self):
         return self.nom
     
 class PointDeVenteToEvenement(models.Model):
-    pdv = models.ForeignKey(PointDeVente, on_delete=models.CASCADE, null = True)
+    pdv = models.ForeignKey(PointDeVente, on_delete=models.CASCADE, null = True, related_name = "PDVToEvent_related")
     event = models.ForeignKey(Evenement, on_delete=models.CASCADE, null = True, related_name = "PDVToEvent_related")
 
     def get_pdv(self, obj):
@@ -36,13 +39,14 @@ class Sponsor(models.Model):
     image = models.ImageField(default = None, upload_to="sponsors/")
     event = models.ForeignKey(Evenement, on_delete = models.CASCADE, default = None, related_name = 'related_sponsors')
     
-    def image_url(self):
-        # Renvoie le lien complet pour accéder à l'image
-        return self.image.use_url
+    # def image_url(self):
+    #     # Renvoie le lien complet pour accéder à l'image
+    #     return self.image.use_url
 
 class TicketBase(models.Model):
     type_ticket = models.TextField(max_length = 24)
     nb_ticket  = models.IntegerField(default = 0, null = True)
+    prix = models.DecimalField(max_digits=10, decimal_places=0, default=0)
     event = models.ForeignKey(Evenement, on_delete = models.SET_NULL, null = True, related_name = "%(class)s_related")#Addticket_related
 
     class Meta():

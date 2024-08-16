@@ -11,7 +11,7 @@ def GoogleLoginGetToken(code):
         "code" : code,  
         "client_id":client_id,
         "client_secret":client_secret,
-        "redirect_uri":"http://localhost:5173/point-de-vente/",
+        "redirect_uri":"http://localhost:5173/accueil",
         "grant_type":"authorization_code"
         } 
         response = requests.post(token_endpoint, token_params)

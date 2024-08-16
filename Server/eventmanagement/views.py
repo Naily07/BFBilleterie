@@ -9,23 +9,31 @@ from .serializer import *
 from django.http import Http404
 from rest_framework import status
 from django.db import IntegrityError
-from api.mixins import OrganisateursEditorMixin, UserQuerySet, PointDeVenteEditorMixin
+from rest_framework.views import APIView
+from api.mixins import *
 from account.serializer import PointDeVenteSerializer
+from rest_framework.permissions import IsAuthenticated
+from .utils import createQrCode
 # Create your views here.
 
 class ListSponsor(generics.ListAPIView):
     queryset = Sponsor.objects.all()
     serializer_class = SponsorSerializer
 
-class ListCreateEvent( generics.ListCreateAPIView):
+class ListCreateEvent( generics.ListCreateAPIView, OwnerQuerySet, OrganisateursEditorMixin):
     queryset = Evenement.objects.all()
     serializer_class = EventSerealiser
+    # permission_classes = [IsAuthenticated, ]
 
+    def get_serializer_context(self):
+        context = super(ListCreateEvent, self).get_serializer_context()
+        context.update({"request": self.request})
+        return context
 
     def create(self, request, *args, **kwargs):
         try :
             serializer = self.get_serializer(data=request.data)
-            # image = request.FILES
+            image = request.FILES.get('image')
             print(request.data.get('nom'))
             spons = request.FILES.getlist('sponsor_image')
             #Recuperation de sponsors image lien
@@ -51,9 +59,9 @@ class ListCreateEvent( generics.ListCreateAPIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
     def perform_create(self, serializer):
-        print("perform")
         try:
             user = self.request.user    
+            print("perform",user)
             print("slug", slugify(serializer.validated_data.get('nom')))
             slug = slugify(serializer.validated_data.get('nom'))
             if(not user.is_anonymous):
@@ -64,7 +72,6 @@ class ListCreateEvent( generics.ListCreateAPIView):
 
         except IntegrityError as e:
             return Response({"error": f"perform_create {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class ListTypeEvent(generics.ListAPIView, ):
     queryset = Evenement.objects.all()
@@ -78,13 +85,18 @@ class RemovEvent(generics.RetrieveDestroyAPIView, generics.ListAPIView):
     lookup_field = "slug"
 
 
-class DetailEvent(UserQuerySet, generics.RetrieveAPIView):
+class DetailEvent(generics.RetrieveAPIView, OrganisateursEditorMixin, PointDeVenteEditorMixin):
     queryset = Evenement.objects.all()
     serializer_class = EventSerealiser
     lookup_field = "slug"
 
+    def get_serializer_context(self):
+        context = super(DetailEvent, self).get_serializer_context()
+        context.update({"request": self.request})
+        return context
 
-class ListCreateTickets(OrganisateursEditorMixin, generics.ListCreateAPIView):
+
+class ListCreateTickets(generics.ListAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerealiser
 
@@ -134,9 +146,15 @@ class ListCreateTickets(OrganisateursEditorMixin, generics.ListCreateAPIView):
         
         from .utils import createQrCode
         i = 1
-        while i <= nb_tickets :
-            createQrCode(i, instanceTicket.type_ticket, instanceTicket.event)
-            i+=1
+        try:
+            while i <= nb_tickets :
+                createQrCode(i, instanceTicket.type_ticket, instanceTicket.event)
+                i+=1
+        except Exception as e:
+            # instanceTicket
+            deleteTicket = Ticket.objects.get(instanceTicket).delete()
+            print("Deleting", deleteTicket)
+            return Response({"message" : "Erreur lors de la creation de ticket"}, status=500)        
         return Response(serializer.data, status=201)
         
     def get(self, request, *args, **kwargs):
@@ -152,11 +170,75 @@ class ListCreateTickets(OrganisateursEditorMixin, generics.ListCreateAPIView):
     def get_Oneevent(self, request):
         slug = self.kwargs.get('slug')
         try:
-            get_event = Evenement.objects.filter(slug__iexact=slug, owner__exact = self.request.user).first()
+            if self.request.user.groups.filter(name='organisateurs').exists():
+                get_event = Evenement.objects.get(slug__iexact=slug, owner__exact = self.request.user)
+            elif  self.request.user.groups.filter(name='clients').exists() : 
+                get_event = Evenement.objects.get(slug__iexact=slug)
+            else : raise Evenement.DoesNotExist
             return get_event
         except Evenement.DoesNotExist:
             raise Http404("L'événement spécifié n'a pas été trouvé.")
 
+class BulkCreateTicket(APIView, OrganisateursEditorMixin):
+
+    def post(self, request, *args, **kwargs):
+        listTicket = request.data
+        listInstanceTicket = []
+        print("LIST ", listTicket)
+        try:
+            get_event = self.get_Oneevent(request=request)
+            for ticket in listTicket:
+                ticketExist = Ticket.objects.filter(event = get_event, type_ticket = ticket['type_ticket'])#List de tickets
+                if ticketExist:
+                    return Response(f'Le type de ticket {ticketExist} existe déjà')
+                print(ticket)
+                if get_event :
+                    #Verification de limite de type de ticket
+                    tickets = Ticket.objects.filter(event = get_event)
+                    listTicket = TicketSerealiser(tickets, many = True).data
+                    size = len(listTicket)
+                    if size > 3 :
+                        return Response("Limite de ticket atteinte", status=status.HTTP_406_NOT_ACCEPTABLE)
+                print("DATA ", request.data)
+                listInstanceTicket.append(Ticket(**ticket, event = get_event))
+            ticketData = Ticket.objects.bulk_create(listInstanceTicket)
+            #Creation de AddTicket
+            owner = CustomUser.objects.filter(username = self.request.user).first()
+            print("Ornganisateurs Tickets", owner)
+            list_pdv = owner.pointdevente_related.all()
+            for instance in listInstanceTicket :
+                for pdv in list_pdv:
+                    print(pdv)
+                    add, isCreated = AddTicket.objects.get_or_create(
+                        type_ticket = instance.type_ticket,
+                        event = instance.event,
+                        prix = instance.prix,
+                        pointdevente = pdv
+                    )
+                    print("get_or_create", add, isCreated)
+                    nb_tickets = int(instance.nb_ticket)
+                    try:
+                        i = 1
+                        while i <= nb_tickets :
+                            createQrCode(i, instance.type_ticket, instance.event)
+                            i+=1
+                    except Exception as e:
+                        # instanceTicket
+                        deleteTicket = Ticket.objects.get(instance).delete()
+                        print("Deleting", deleteTicket)
+                        return Response({"message" : "Erreur lors de la creation de QRticket"}, status=500)        
+            return Response(TicketSerealiser(ticketData, many = True).data, status=201)
+        except Exception as e:
+            raise BaseException(e)
+    
+    def get_Oneevent(self, request):
+        slug = self.kwargs['slug']
+        try:
+            get_event = Evenement.objects.get(slug__iexact=slug, owner__exact = self.request.user)
+            return get_event
+        except Evenement.DoesNotExist:
+            raise Http404("L'événement spécifié n'a pas été trouvé.")
+        
 class UpdateTickets(generics.UpdateAPIView, generics.RetrieveAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerealiser
@@ -167,7 +249,7 @@ class UpdateTickets(generics.UpdateAPIView, generics.RetrieveAPIView):
         updateNumber = instance.nb_ticket
         print(instance.id)
         try :
-            qr = TicketQrCode.objects.filter(ID_ticket__iexact = instance.id).last()
+            qr = TicketQrCode.objects.filter(id__iexact = instance.id).last()
             print("QR", qr)
             if qr :
                 if updateNumber > qr.num :
@@ -179,6 +261,34 @@ class UpdateTickets(generics.UpdateAPIView, generics.RetrieveAPIView):
         except TicketQrCode.DoesNotExist:
             print("Pas de Qr Code pour l'instant")
 
+class DeleteTicket(generics.DestroyAPIView, generics.RetrieveAPIView, OrganisateursEditorMixin):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerealiser
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            event = self.get_Oneevent(request=request)
+            Ticket.objects.get(event = event, type_ticket = instance.type_ticket)
+            AddTicket.objects.delete(event = event, type_ticket = instance.type_ticket)
+            self.perform_destroy(instance)
+        except Ticket.DoesNotExist:
+            raise Http404("Le Ticket spécifié n'a pas été trouvé.")
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    def perform_destroy(self, instance):
+        deleteAddTicket = AddTicket.objects.filter(event__exact = instance.event, type_ticket__iexact=instance.type_ticket).delete()
+        print("DeleteADD ", deleteAddTicket)
+        return super().perform_destroy(instance)
+    
+    def get_Oneevent(self, request):
+        slug = self.kwargs.get('slug')
+        try:
+            get_event = Evenement.objects.get(slug__iexact=slug, owner__exact = self.request.user)
+            print("SLUG", get_event)
+            return get_event
+        except Evenement.DoesNotExist:
+            raise Http404("L'événement spécifié n'a pas été trouvé.")
 
 #POINTDEVENTE
 from api.mixins import AddTicketQuerySet
@@ -191,7 +301,6 @@ class ListAddTicketsPDV(PointDeVenteEditorMixin, AddTicketQuerySet, generics.Lis
         pdv = PointDeVente.objects.filter(username__iexact = pdv).first()
         print(pdv.owner)
         return pdv.owner 
-
 
 #Organisateur 
 class ListAddTicketsOrganisateur(OrganisateursEditorMixin, AddTicketQuerySet, generics.ListCreateAPIView):
@@ -226,6 +335,41 @@ class RetrieveUpdateAddTickets(OrganisateursEditorMixin, AddTicketQuerySet, gene
         print("Data", serializer.data)
         return Response(serializer.data)
 
+class BulkUpdateAddTickets(OrganisateursEditorMixin, AddTicketQuerySet, generics.GenericAPIView,):
+    # qs_field_pdv = 'pk' #Point de vente dans l'url, cible pour avoir le AddTicket
+    queryset = AddTicket.objects.all()
+    serializer_class = AddTicketSerializer
+    lookup_field = 'pk'
+    qs_field = 'pdvId'
+
+    def patch(self, request, *args, **kwargs):
+        try:
+            datas = request.data
+            for data in datas:
+                addTicket = AddTicket.objects.get(id=data['pk'])
+                serializer = self.get_serializer(addTicket, data=data)
+                sommeAddTicket = addTicket.nb_ticket - int(data['nb_ticket'])
+                ticket = Ticket.objects.get(event = addTicket.event, type_ticket = addTicket.type_ticket)
+                print("TT", addTicket.nb_ticket)
+                if sommeAddTicket < 0 :
+                    ticket.nb_ticket += sommeAddTicket
+                    if ticket.nb_ticket < 0:
+                        return Response({"message" : "Erreur sur la quantité"}, status=status.HTTP_400_BAD_REQUEST)
+                    ticket.save()
+                elif sommeAddTicket > 0 :
+                    ticket.nb_ticket += sommeAddTicket
+                    ticket.save()
+                if sommeAddTicket != 0:
+                    addTicket.nb_ticket = data['nb_ticket']
+                    addTicket.save()
+                # raise serializer.
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except AddTicket.DoesNotExist:
+            print("Does")
+            raise Http404
+        except Exception as e:
+            raise BaseException(e)
+
 
 from rest_framework.views import APIView
 from .models import TicketQrCode
@@ -236,7 +380,7 @@ class ScanQrCode(OrganisateursEditorMixin, APIView):
             type_ticket = kwargs['type_ticket']
             num = kwargs['num']
             event_slug = kwargs['slug']
-            event = Evenement.objects.filter(slug__iexact = event_slug, owner__exact = request.user).first()
+            event = Evenement.objects.filter(slug__iexact = event_slug).first()
             if not event:
                 return Response({"detail" : "Evenement n'exist pas"}, status=status.HTTP_400_BAD_REQUEST)
             ticketQrCode = TicketQrCode.objects.filter(type_ticket = type_ticket, num = num , event = event).first()
@@ -249,3 +393,44 @@ class ScanQrCode(OrganisateursEditorMixin, APIView):
             raise Http404('Le ticket n\'exist pas')
         except Exception as e:
             raise BaseException(e)
+
+class ListQrCode(generics.ListAPIView, OwnerQuerySetQrCode):
+    queryset = TicketQrCode.objects.all()
+    serializer_class = TicketQrCodeSerialiser
+
+class RetrieveQrCode(generics.RetrieveAPIView):
+    queryset = TicketQrCode.objects.all()
+    serializer_class = TicketQrCodeSerialiser
+
+class BuyTicket(APIView, ClientEditorMixin):
+    def post(self, request,* args, **kwargs):
+        user = request.user
+        datas = request.data
+        for data in datas:
+            type_ticket = data['type_ticket']
+            nb_ticket = int(data['nb_ticket'])
+            try:
+                slug = self.kwargs['slug']
+                event = Evenement.objects.get(slug = slug)
+                ticket = Ticket.objects.filter(event = event, type_ticket = type_ticket).first()
+
+                if ticket is None:
+                    return Response({'detail': 'Ticket type not found'}, status=status.HTTP_404_NOT_FOUND)
+
+                # Vérifier la disponibilité des tickets
+                if ticket.nb_ticket < nb_ticket:
+                    return Response({'detail': 'Not enough tickets available'}, status=status.HTTP_400_BAD_REQUEST)
+                
+                listQrCode = TicketQrCode.objects.filter(addOwner__exact = None, type_ticket__iexact = type_ticket, event__exact = event)[:nb_ticket]
+                instanceQrCodeList = []
+                for qrCodeinstance in listQrCode:
+                    qrCodeinstance.addOwner = user
+                    instanceQrCodeList.append(qrCodeinstance)
+                TicketQrCode.objects.bulk_update(instanceQrCodeList, ['addOwner'])
+                ticket.nb_ticket -= nb_ticket
+                ticket.save()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            except Evenement.DoesNotExist :
+                return Response({"message" : "Evenement not Found"}, status=status.HTTP_404_NOT_FOUND)
+            except Exception as e:
+                raise BaseException(e)

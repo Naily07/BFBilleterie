@@ -119,8 +119,8 @@ AUTH_PASSWORD_VALIDATORS = [
 from datetime import timedelta
 SIMPLE_JWT = {
   "TOKEN_OBTAIN_SERIALIZER": "api.serializer.MyTokenAuthentication",
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=2),
-    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=15),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(hours=2),
     "ALGORITHM": "HS256",
     'AUTH_COOKIE': 'access',  # Nom du cookie à envoyer
     'AUTH_COOKIE_REFRESH': 'refresh',  # Nom du cookie à envoyer
